@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: be2e7e494c2565b46869c08d59ecbcae
+guid: 05b3649a71170664baa6f3e2e2b90d03
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638794586044460757
+  platformSettingsDirtyTick: 638794559591340071
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -123,7 +123,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Town
+  - name: Train
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -133,9 +133,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 640
-      height: 320
-    spriteID: 84ca6b1c34db4744996491d9a083d08c
+      width: 94
+      height: 22
+    spriteID: a3ca104116d5013448db358e466f51f7
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -145,7 +145,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
   spriteSheetImportData:
-  - name: Town_0
+  - name: Train_0
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -155,9 +155,30 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 640
-      height: 320
-    spriteID: 617d05bcd64e2474fa830d2c58ba8c74
+      width: 40
+      height: 19
+    spriteID: 474e188428e7cc74cbb4ad4603de2439
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: Train_1
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 50
+      y: 4
+      width: 48
+      height: 22
+    spriteID: d5064105c7dd45f4a91185e299a14e0a
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -168,21 +189,21 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   asepriteLayers:
   - layerIndex: 0
-    guid: 1367192282
-    name: Town
+    guid: 829035444
+    name: Train
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Town
+    - name: Train
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 0
+        x: 2
         y: 0
-        width: 640
-        height: 320
-      spriteId: 84ca6b1c34db4744996491d9a083d08c
+        width: 94
+        height: 22
+      spriteId: a3ca104116d5013448db358e466f51f7
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -237,5 +258,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 640, y: 320}
-  previousTextureSize: {x: 1024, y: 512}
+  canvasSize: {x: 98, y: 22}
+  previousTextureSize: {x: 128, y: 32}

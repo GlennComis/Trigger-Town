@@ -140,19 +140,19 @@ TextureImporter:
       name: CowBoySmokingIdle_0
       rect:
         serializedVersion: 2
-        x: 14
+        x: 0
         y: 0
-        width: 23
-        height: 46
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d6ed03c6ae73cd980800000000000000
+      spriteID: 9ce3941bec53e0549b14c7cf996eb17c
       internalID: -8512867715660063123
       vertices: []
       indices: 
@@ -162,19 +162,19 @@ TextureImporter:
       name: CowBoySmokingIdle_1
       rect:
         serializedVersion: 2
-        x: 62
+        x: 48
         y: 0
-        width: 22
-        height: 43
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3251bf501e66c17c0800000000000000
+      spriteID: 4134e644f38f2504eb4819237ce7a49b
       internalID: -4099288444159978205
       vertices: []
       indices: 
@@ -184,19 +184,19 @@ TextureImporter:
       name: CowBoySmokingIdle_2
       rect:
         serializedVersion: 2
-        x: 110
+        x: 96
         y: 0
-        width: 22
-        height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 840e2bdf9847b00f0800000000000000
+      spriteID: bddff6ac69de4e0479fe8b8477b0629c
       internalID: -1149697143847329720
       vertices: []
       indices: 
@@ -206,19 +206,19 @@ TextureImporter:
       name: CowBoySmokingIdle_3
       rect:
         serializedVersion: 2
-        x: 158
+        x: 144
         y: 0
-        width: 22
-        height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 458714a33db757f30800000000000000
+      spriteID: f4f30cd945965aa42925fb710ffe47bf
       internalID: 4572697143810291796
       vertices: []
       indices: 
@@ -228,19 +228,19 @@ TextureImporter:
       name: CowBoySmokingIdle_4
       rect:
         serializedVersion: 2
-        x: 206
+        x: 192
         y: 0
-        width: 21
-        height: 41
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 5827fbb187bbcb590800000000000000
+      spriteID: cd5b67b578410844b90534e7da6fbddd
       internalID: -7657039141900684667
       vertices: []
       indices: 
@@ -250,19 +250,19 @@ TextureImporter:
       name: CowBoySmokingIdle_5
       rect:
         serializedVersion: 2
-        x: 254
+        x: 240
         y: 0
-        width: 21
-        height: 43
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 95aa7a3c8e75efc90800000000000000
+      spriteID: 6a9db39053f7d5c438de575eb8f41249
       internalID: -7134168102481712551
       vertices: []
       indices: 
@@ -272,19 +272,19 @@ TextureImporter:
       name: CowBoySmokingIdle_6
       rect:
         serializedVersion: 2
-        x: 302
+        x: 288
         y: 0
-        width: 21
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: f7a301e2e78f712a0800000000000000
+      spriteID: 045165c092bf8024abaca4d4a63aae6d
       internalID: -6766666694278497665
       vertices: []
       indices: 
@@ -294,19 +294,19 @@ TextureImporter:
       name: CowBoySmokingIdle_7
       rect:
         serializedVersion: 2
-        x: 350
+        x: 336
         y: 0
-        width: 21
-        height: 43
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: ad2a358f777e07c60800000000000000
+      spriteID: 333444e8ed9862c4894f2b0c5945ba99
       internalID: 7813999855941165786
       vertices: []
       indices: 
@@ -316,19 +316,19 @@ TextureImporter:
       name: CowBoySmokingIdle_8
       rect:
         serializedVersion: 2
-        x: 398
+        x: 384
         y: 0
-        width: 22
-        height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 48
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: ebb5998f22affcee0800000000000000
+      spriteID: 8fc0a00d8ad96b043a657f9eaa510866
       internalID: -1238496344396964930
       vertices: []
       indices: 
@@ -338,7 +338,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ed663ce491e3d6944b96f551608e6e65
     internalID: 0
     vertices: []
     indices: 
