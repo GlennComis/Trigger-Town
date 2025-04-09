@@ -178,10 +178,10 @@ ScriptedImporter:
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 0
-        y: 0
-        width: 640
-        height: 320
+        x: 56
+        y: 65
+        width: 511
+        height: 136
       spriteId: 21c80444b346c03479f53487749a594f
     linkedCells: []
     parentIndex: -1
@@ -238,4 +238,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 640, y: 320}
-  previousTextureSize: {x: 1024, y: 512}
+  previousTextureSize: {x: 1024, y: 256}

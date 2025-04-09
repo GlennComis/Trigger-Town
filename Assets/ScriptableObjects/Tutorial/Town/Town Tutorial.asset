@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98d5b2043a9e4987a3fa2455f846e9d9, type: 3}
+  m_Name: Town Tutorial
+  m_EditorClassIdentifier: 
+  dialogueScriptableObjects:
+  - {fileID: 11400000, guid: 8f4b73b790b6426408746f36afa1f454, type: 2}
+  - {fileID: 11400000, guid: f4977397c9ec78b4598ff8d46cf6c52f, type: 2}
+  - {fileID: 11400000, guid: 4b9dfbeb6166f7d4fbce63d48f8d9038, type: 2}
+  - {fileID: 11400000, guid: 5f0d4b4d5da8b5d45938278c6a9ddb57, type: 2}
+  - {fileID: 11400000, guid: 36363889f65c3e94094112dce47125bc, type: 2}
+  - {fileID: 11400000, guid: 80ab907603a81d444834115e104d4650, type: 2}
+  - {fileID: 11400000, guid: 55315a4f972b26743b00e9a49851b339, type: 2}
+  - {fileID: 11400000, guid: db3d4c9dd25547740bb8e417848c8ef3, type: 2}
+  - {fileID: 11400000, guid: afa25da37f1b4264c9926a8ecf11d6ba, type: 2}
+  - {fileID: 11400000, guid: 97e0eb9d2ac146349908df521451d4b1, type: 2}
+  - {fileID: 11400000, guid: babfa51ecf405954aa4d7f8498f32a8c, type: 2}
