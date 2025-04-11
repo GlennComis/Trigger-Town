@@ -93,25 +93,27 @@ public class SheriffController : MonoBehaviour
 
     private void LoadSceneWithFade(int index)
     {
-        //todo: trigger dialogue on button and after that fade when conversation is complete
         if (isReturning) return;
         isReturning = true;
 
         Sequence sequence = DOTween.Sequence();
 
-        // Fade screen to black
-        sequence.AppendCallback(() =>
-        {
-            loadingScreenImage.color = SetAlpha(loadingScreenImage.color, 0f);
-        });
+        // Ensure image is visible and alpha 0
+        Color color = loadingScreenImage.color;
+        loadingScreenImage.gameObject.SetActive(true);
+        loadingScreenImage.color = SetAlpha(color, 0f);
+        loadingScreenImage.enabled = true;
+
+        // Fade in to black
         sequence.Append(loadingScreenImage.DOFade(1f, fadeDuration));
 
-        // Load scene
+        // Load scene after fade
         sequence.AppendCallback(() =>
         {
             SceneManager.LoadScene(index);
         });
     }
+
 
     public void OnWantedPosterButton()
     {

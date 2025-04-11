@@ -4,7 +4,6 @@ using UnityEngine;
 public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 {
     public GameObject healthIndicatorPrefab;
-    
     public static event System.Action OnDrawSignal;
     public static event System.Action<bool> OnDrawResult;
     public static event System.Action OnFiredEarly;
