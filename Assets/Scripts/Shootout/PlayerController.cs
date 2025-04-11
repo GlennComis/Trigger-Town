@@ -4,12 +4,12 @@ public class PlayerController : CharacterController
 {
     private void OnEnable()
     {
-        GameManager.OnDrawResult += ProcessResult;
+        FastDrawManager.OnDrawResult += ProcessResult;
     }
     
     private void OnDisable()
     {
-        GameManager.OnDrawResult -= ProcessResult;
+        FastDrawManager.OnDrawResult -= ProcessResult;
     }
 
     private void ProcessResult(bool playerWon)
@@ -24,13 +24,13 @@ public class PlayerController : CharacterController
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GameManager.Instance.PlayerShot();
+            FastDrawManager.Instance.PlayerShot();
         }
     }
 
     protected override void Die()
     {
         base.Die();
-        GameManager.Instance.RoundEnd(false);
+        FastDrawManager.Instance.RoundEnd(false);
     }
 }

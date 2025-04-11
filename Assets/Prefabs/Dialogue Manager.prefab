@@ -503,4 +503,4 @@ MonoBehaviour:
   npcNameLabel: {fileID: 233662190306020833}
   dialogueTextLabel: {fileID: 8839403251799215194}
   npcAudioSource: {fileID: 0}
-  currentConversation: {fileID: 11400000, guid: bdc9805a0fd785b42833f4de71af46f1, type: 2}
+  currentConversation: {fileID: 0}

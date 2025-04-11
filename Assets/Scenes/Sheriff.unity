@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 160942881}
   - component: {fileID: 160942882}
+  - component: {fileID: 160942883}
   m_Layer: 0
   m_Name: Sheriff
   m_TagString: Untagged
@@ -174,6 +175,21 @@ MonoBehaviour:
   actionButton: {fileID: 2013654203}
   buttonSlideDistance: 1000
   buttonSlideDuration: 0.75
+  headOutConversation: {fileID: 11400000, guid: b4f125708e45905409d99f8d80475aea, type: 2}
+--- !u!114 &160942883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 160942880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e23b141c05804fb493971a9e90f036af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sheriffIntroduction: {fileID: 11400000, guid: f7eeebd6471f3654fa8153229e53ad52, type: 2}
+  sheriffController: {fileID: 160942882}
 --- !u!1 &169554153
 GameObject:
   m_ObjectHideFlags: 0
@@ -957,7 +973,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Brother billy
+  m_text: ???
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a218e013f7445b54c8e323866ce2aaf6, type: 2}
   m_sharedMaterial: {fileID: -6970919630414690912, guid: a218e013f7445b54c8e323866ce2aaf6, type: 2}
@@ -1247,8 +1263,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 160942882}
         m_TargetAssemblyTypeName: SheriffController, Assembly-CSharp
-        m_MethodName: LoadSceneWithFade
-        m_Mode: 3
+        m_MethodName: OnWantedPosterButton
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

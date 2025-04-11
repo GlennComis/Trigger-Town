@@ -15,6 +15,6 @@ MonoBehaviour:
   npcName: Mayor Clint
   sprite: {fileID: 0}
   dialogue: "Name\u2019s Mayor Clint, and this here\u2019s Trigger Town \u2013 a
-    rough little place with a big outlaw problem. That\u2019s where you come in."
+    rough little place with a big outlaw problem."
   audioClip: {fileID: 0}
   preventPlayerInteraction: 0

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98d5b2043a9e4987a3fa2455f846e9d9, type: 3}
+  m_Name: SheriffIntroduction
+  m_EditorClassIdentifier: 
+  dialogueScriptableObjects:
+  - {fileID: 11400000, guid: f7b40af5113eb6b4fa5e5f3b026b6844, type: 2}
+  - {fileID: 11400000, guid: 4f210366e5c0e614e868652751d09b65, type: 2}
+  - {fileID: 11400000, guid: c504aba5d984a2441843e1d51a49a6a3, type: 2}
+  - {fileID: 11400000, guid: 4d43714476602e64a94b9bd0196154af, type: 2}
+  - {fileID: 11400000, guid: 5ea937d919d851d4e9a6b33543e43a9c, type: 2}
+  - {fileID: 11400000, guid: 20454ac55daeac74a9cfacbdf6f687ca, type: 2}

@@ -16,22 +16,22 @@ public class EnemyController : CharacterController
 
     private void OnEnable()
     {
-        GameManager.OnDrawSignal += PrepareToShoot;
-        GameManager.OnDrawResult += ProcessResult;
-        GameManager.OnFiredEarly += PlayerFiredEarly;
+        FastDrawManager.OnDrawSignal += PrepareToShoot;
+        FastDrawManager.OnDrawResult += ProcessResult;
+        FastDrawManager.OnFiredEarly += PlayerFiredEarly;
     }
 
     private void OnDisable()
     {
-        GameManager.OnDrawSignal -= PrepareToShoot;
-        GameManager.OnDrawResult -= ProcessResult;
-        GameManager.OnFiredEarly -= PlayerFiredEarly;
+        FastDrawManager.OnDrawSignal -= PrepareToShoot;
+        FastDrawManager.OnDrawResult -= ProcessResult;
+        FastDrawManager.OnFiredEarly -= PlayerFiredEarly;
     }
 
     private void PrepareToShoot()
     {
         reactionTime = Random.Range(minReactionTime, maxReactionTime);
-        GameManager.Instance.SetEnemyReactionTime(reactionTime);
+        FastDrawManager.Instance.SetEnemyReactionTime(reactionTime);
         canShoot = true;
         hasShot = false;
 
@@ -62,10 +62,10 @@ public class EnemyController : CharacterController
     {
         yield return playerFiredEarlyReactionDelay;
 
-        if (!GameManager.Instance.IsActionPaused)
+        if (!FastDrawManager.Instance.IsActionPaused)
         {
             Shoot();
-            GameManager.Instance.DetermineFirstShooter();
+            FastDrawManager.Instance.DetermineFirstShooter();
         }
     }
 
@@ -74,17 +74,17 @@ public class EnemyController : CharacterController
         yield return new WaitForSeconds(reactionTime);
 
         // Stop if logic is paused or already shot
-        if (hasShot || GameManager.Instance.IsActionPaused)
+        if (hasShot || FastDrawManager.Instance.IsActionPaused)
             yield break;
 
         Shoot();
         hasShot = true;
-        GameManager.Instance.DetermineFirstShooter();
+        FastDrawManager.Instance.DetermineFirstShooter();
     }
 
     protected override void Die()
     {
         base.Die();
-        GameManager.Instance.RoundEnd(true);
+        FastDrawManager.Instance.RoundEnd(true);
     }
 }

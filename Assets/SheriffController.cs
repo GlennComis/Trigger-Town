@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class SheriffController : MonoBehaviour
 {
     [Header("References")]
-    public Image loadingScreenImage;              // The UI image for the loading screen
+    public Image loadingScreenImage; // The UI image for the loading screen
     public SpriteRenderer counterSprite;
     public SpriteRenderer sheriffSprite;
 
@@ -17,9 +17,12 @@ public class SheriffController : MonoBehaviour
     public Vector3 counterOffscreenOffset = new Vector3(0f, -5f, 0f);
 
     [Header("Button UI")]
-    public RectTransform actionButton;               // The button to animate
+    public RectTransform actionButton; // The button to animate
     public float buttonSlideDistance = 300f;
     public float buttonSlideDuration = 0.75f;
+
+    [Header("Conversation")]
+    [SerializeField]private ConversationScriptableObject headOutConversation;
 
     private Vector3 counterTargetPosition;
     private Vector2 buttonTargetPosition;
@@ -44,6 +47,23 @@ public class SheriffController : MonoBehaviour
 
         RunSequence();
     }
+    
+    private void OnEnable()
+    {
+        DialogueManager.OnEndConversation += HandleEndConversation;
+    }
+
+    private void OnDisable()
+    {
+        DialogueManager.OnEndConversation -= HandleEndConversation;
+    }
+
+    private void HandleEndConversation()
+    {
+        if (DialogueManager.Instance.GetCurrentConversation == headOutConversation)
+            LoadSceneWithFade(1);
+    }
+
 
     private void Update()
     {
@@ -68,32 +88,16 @@ public class SheriffController : MonoBehaviour
         // Fade in sheriff
         sequence.AppendInterval(sheriffFadeDelay);
         sequence.Append(sheriffSprite.DOFade(1f, fadeDuration));
-
-        // Slide in button
-        if (actionButton != null)
-        {
-            sequence.Append(actionButton.DOAnchorPosY(
-                buttonTargetPosition.y,
-                buttonSlideDuration
-            ).SetEase(Ease.OutBack));
-        }
+        
     }
 
-    public void LoadSceneWithFade(int index)
+    private void LoadSceneWithFade(int index)
     {
+        //todo: trigger dialogue on button and after that fade when conversation is complete
         if (isReturning) return;
         isReturning = true;
 
         Sequence sequence = DOTween.Sequence();
-
-        // Slide button offscreen (back down)
-        if (actionButton != null)
-        {
-            sequence.Append(actionButton.DOAnchorPosY(
-                buttonTargetPosition.y - buttonSlideDistance,
-                buttonSlideDuration
-            ).SetEase(Ease.InBack));
-        }
 
         // Fade screen to black
         sequence.AppendCallback(() =>
@@ -109,6 +113,12 @@ public class SheriffController : MonoBehaviour
         });
     }
 
+    public void OnWantedPosterButton()
+    {
+        DialogueManager.Instance.SetCurrentConversation(headOutConversation, true);
+        SlideOutWantedPoster();
+    }
+
     private void FadeAndLoadScene(int index)
     {
         loadingScreenImage.color = SetAlpha(loadingScreenImage.color, 0f);
@@ -122,5 +132,27 @@ public class SheriffController : MonoBehaviour
     {
         color.a = alpha;
         return color;
+    }
+
+    public void SlideInWantedPoster()
+    {
+        if (actionButton != null)
+        {
+            actionButton.DOAnchorPosY(
+                buttonTargetPosition.y,
+                buttonSlideDuration
+            ).SetEase(Ease.OutBack);
+        }
+    }
+
+    public void SlideOutWantedPoster()
+    {
+        if (actionButton != null)
+        {
+            actionButton.DOAnchorPosY(
+                buttonTargetPosition.y - buttonSlideDistance,
+                buttonSlideDuration
+            ).SetEase(Ease.InBack);
+        }
     }
 }

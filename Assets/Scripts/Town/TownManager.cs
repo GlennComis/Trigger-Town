@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class TownController : MonoBehaviour
+public class TownManager : SingletonMonoBehaviour<TownManager>
 {
     [Header("Buildings")]
     public List<Transform> buildings;
@@ -20,6 +20,8 @@ public class TownController : MonoBehaviour
     private Tween arrowBounceTween;
     private int currentIndex = 0;
 
+    private bool canSelect = true;
+
     private void Start()
     {
         if (buildings == null || buildings.Count == 0)
@@ -31,11 +33,11 @@ public class TownController : MonoBehaviour
         CreateArrowIndicator(buildings[currentIndex]);
     }
 
-    void Update()
+    private void Update()
     {
+        if (!canSelect) return;
         HandleArrowKeyInput();
         HandleSelectionInput();
-        // HandleMouseClickInput(); // still disabled
     }
 
     private void HandleArrowKeyInput()
@@ -70,42 +72,6 @@ public class TownController : MonoBehaviour
         }
     }
 
-    /*
-    private void HandleMouseClickInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Collider2D hit = Physics2D.OverlapPoint(mousePos);
-
-            if (hit != null)
-            {
-                GameObject hitGO = hit.gameObject;
-                Debug.Log($"Clicked on: {hitGO.name}", hitGO);
-
-                for (int i = 0; i < buildings.Count; i++)
-                {
-                    Transform building = buildings[i];
-
-                    if (hitGO.transform == building || hitGO.transform.IsChildOf(building))
-                    {
-                        Debug.Log($"Matched building: {building.name}", building.gameObject);
-                        currentIndex = i;
-                        UpdateArrowPosition();
-                        return;
-                    }
-                }
-
-                Debug.LogWarning($"Clicked object '{hitGO.name}' is not in buildings list.", hitGO);
-            }
-            else
-            {
-                Debug.Log("No collider hit under mouse.");
-            }
-        }
-    }
-    */
-
     private void CreateArrowIndicator(Transform target)
     {
         if (arrowPrefab == null) return;
@@ -131,10 +97,7 @@ public class TownController : MonoBehaviour
 
         if (sr != null && sr.sprite != null)
         {
-            // Get top edge of sprite bounds in local space
             float localTop = sr.sprite.bounds.max.y;
-
-            // Convert local top position to world position
             Vector3 localTopWorld = target.TransformPoint(new Vector3(0, localTop, 0));
 
             // Set arrow position above that, with extra padding
@@ -151,5 +114,41 @@ public class TownController : MonoBehaviour
             .DOMoveY(currentArrowInstance.transform.position.y + bounceHeight, bounceDuration)
             .SetEase(bounceEase)
             .SetLoops(-1, LoopType.Yoyo);
+    }
+    
+    /// <summary>
+    /// The building index might change if we change the order of the List
+    /// Check the buildings variable in the inspector to see the exact order
+    /// </summary>
+    /// <param name="buildingIndex"></param>
+    public void SelectSpecificBuilding(int buildingIndex)
+    {
+        currentIndex = buildingIndex;
+        UpdateArrowPosition();
+    }
+
+    public void EnableArrowInstanceGameObject()
+    {
+        currentArrowInstance.SetActive(true);
+    }
+    
+    public void DisableArrowInstanceGameObject()
+    {
+        currentArrowInstance.SetActive(false);
+    }
+
+    public void EnableBuildingSelection()
+    {
+        canSelect = true;
+    }
+
+    public void DisableBuildingSelection()
+    {
+        canSelect = false;
+    }
+
+    public bool ArrowInstanceExists()
+    {
+        return currentArrowInstance;
     }
 }

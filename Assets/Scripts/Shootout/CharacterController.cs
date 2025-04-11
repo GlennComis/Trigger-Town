@@ -52,7 +52,7 @@ public abstract class CharacterController : MonoBehaviour
     
         for (int i = 0; i < health; i++)
         {
-            GameObject indicator = GameObject.Instantiate(GameManager.Instance.healthIndicatorPrefab, healthContainer);
+            GameObject indicator = GameObject.Instantiate(FastDrawManager.Instance.healthIndicatorPrefab, healthContainer);
             healthIndicators.Add(indicator);
         }
 
@@ -61,7 +61,9 @@ public abstract class CharacterController : MonoBehaviour
     
     public void Shoot()
     {
-        animator.SetTrigger(ShootStringHash);
+        if(animator != null)
+            animator.SetTrigger(ShootStringHash);
+        
         PlayGunShotClip();
     }
     

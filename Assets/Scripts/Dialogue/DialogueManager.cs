@@ -3,52 +3,64 @@ using System.Collections;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using Febucci.UI;
+using Random = UnityEngine.Random;
 
 public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
 {
-    [SerializeField]
-    private RectTransform dialogueRectTransform;
-    public AudioSource textAudioSource;
-    public AudioClip textAudioClip;
+    [Header("UI")]
+    [SerializeField] private RectTransform dialogueRectTransform;
+    [SerializeField] private TextMeshProUGUI npcNameLabel;
+    [SerializeField] private TextMeshProUGUI dialogueTextLabel;
     
-    [SerializeField]
-    public TextMeshProUGUI npcNameLabel;
-    [SerializeField]
-    public TextMeshProUGUI dialogueTextLabel;
-    [SerializeField]
-    public AudioSource npcAudioSource;
+    [SerializeField] private TextAnimator_TMP textAnimator;
     
-    [SerializeField]
-    public ConversationScriptableObject currentConversation;
+    [Header("Audio")]
+    [SerializeField] private AudioSource npcAudioSource;
+    [SerializeField] private AudioSource textAudioSource;
+    [SerializeField] private AudioClip textBlipClip;
+    [SerializeField] private int blipFrequency = 3; // Play sound every N letters
+    private float pitchVariation = 0.03f;
+
+    private ConversationScriptableObject currentConversation;
+    public ConversationScriptableObject GetCurrentConversation => currentConversation;
     private int currentDialogueIndex;
-    public event Action OnEndConversation;
 
+    public static event Action<DialogueScriptableObject> OnDialogueShown;
 
-    //Dialogue Animation
-    private const float RectTransformEndPositionX = 0f;
-    private const float RectTransformStartPositionX = -1500f;
+    [Header("Dialogue Animation")]
+    private const float RectTransformEndPositionY = 150f;
+    private const float RectTransformStartPositionY = -100f;
     private const float FadeTimer = 1f;
     
     public bool IsInConversation { get; private set; }
     public bool HasAllowedPlayerInteraction { get; private set; }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        StartConversation();
-    }
-
+    
+    public static event Action OnEndConversation;
+    
     private void Update()
     {
-        if (Input.anyKeyDown)
+        if (!IsInConversation) return;
+
+        if (Input.GetKeyUp(KeyCode.Space))
         {
-            NextDialogue();
+            if (!textAnimator.allLettersShown)
+            {
+                textAnimator.SetVisibilityEntireText(true, false);
+            }
+            else
+            {
+                NextDialogue();
+            }
         }
     }
 
-    public void SetCurrentConversation(ConversationScriptableObject conversationScriptableObject)
+    public void SetCurrentConversation(ConversationScriptableObject conversationScriptableObject, bool autoStartConversation = false)
     {
         currentConversation = conversationScriptableObject;
+        
+        if(autoStartConversation)
+            StartConversation();
     }
 
     public void StartConversation(bool allowPlayerInteraction = true)
@@ -57,10 +69,10 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
         {
             StartCoroutine(EndConversation());
         }
-        
+
         ClearFields();
         currentDialogueIndex = 0;
-        dialogueRectTransform.DOAnchorPosX(RectTransformEndPositionX , FadeTimer);
+        dialogueRectTransform.DOAnchorPosY(RectTransformEndPositionY, FadeTimer);
         StartCoroutine(SetDialogue(currentDialogueIndex, FadeTimer));
         IsInConversation = true;
 
@@ -70,16 +82,15 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
     private void NextDialogue()
     {
         if (!IsInConversation) return;
-        
+
         currentDialogueIndex++;
-        
+
         if (currentDialogueIndex > currentConversation.dialogueScriptableObjects.Count - 1)
         {
             StartCoroutine(EndConversation());
-            //PlayerManager.Instance.SetCanInteract(true);
             return;
         }
-        
+
         StartCoroutine(SetDialogue(currentDialogueIndex));
     }
 
@@ -87,13 +98,15 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
     {
         if (!IsInConversation)
             return;
+
         StartCoroutine(EndConversation());
     }
 
     private IEnumerator EndConversation()
     {
-        dialogueRectTransform.DOAnchorPosX(RectTransformStartPositionX, FadeTimer);
+        dialogueRectTransform.DOAnchorPosY(RectTransformStartPositionY, FadeTimer);
         yield return new WaitForSeconds(FadeTimer);
+
         currentDialogueIndex = 0;
         IsInConversation = false;
 
@@ -101,21 +114,25 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
         {
             HasAllowedPlayerInteraction = true;
         }
-        
+
         OnEndConversation?.Invoke();
     }
 
     private IEnumerator SetDialogue(int dialogueIndex, float textDelay = 0f)
     {
-        npcNameLabel.text = currentConversation.dialogueScriptableObjects[dialogueIndex].npcName;
+        DialogueScriptableObject dialogueData = currentConversation.dialogueScriptableObjects[dialogueIndex];
+
+        npcNameLabel.text = dialogueData.npcName;
         yield return new WaitForSeconds(textDelay);
 
-        if (currentConversation.dialogueScriptableObjects[dialogueIndex].audioClip != null)
+        if (dialogueData.audioClip != null)
         {
-            npcAudioSource.PlayOneShot(currentConversation.dialogueScriptableObjects[dialogueIndex].audioClip);
+            npcAudioSource.PlayOneShot(dialogueData.audioClip);
         }
+
+        textAnimator.textFull = dialogueData.dialogue;
         
-        dialogueTextLabel.text = currentConversation.dialogueScriptableObjects[dialogueIndex].dialogue;
+        OnDialogueShown?.Invoke(dialogueData);
     }
 
     private void ClearFields()
@@ -124,9 +141,16 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
         dialogueTextLabel.text = string.Empty;
     }
 
-    public void PlayTextAudioClip()
+    private int characterCounter = 0;
+
+    public void OnCharacterPrinted()
     {
-        textAudioSource.PlayOneShot(textAudioClip);
+        characterCounter++;
+
+        if (characterCounter % blipFrequency == 0)
+        {
+            textAudioSource.pitch = Random.Range(1f - pitchVariation, 1f + pitchVariation);
+            textAudioSource.PlayOneShot(textBlipClip);
+        }
     }
-    
 }

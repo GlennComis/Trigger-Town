@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcName: Mayor Clint
   sprite: {fileID: 0}
-  dialogue: Anhh favorite place, the Saloon!
+  dialogue: Anhh my favorite place, the Saloon!
   audioClip: {fileID: 0}
   preventPlayerInteraction: 0
