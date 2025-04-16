@@ -14,7 +14,7 @@ public class PlayerController : CharacterController
 
     private void ProcessResult(bool playerWon)
     {
-        if (!playerWon)
+        if (!playerWon && !FastDrawManager.Instance.IsPassiveEnemy())
         {
             TakeDamage();
         }

@@ -65,6 +65,7 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
 
     public void StartConversation(bool allowPlayerInteraction = true)
     {
+        Debug.unityLogger.Log("StartConversation");
         if (IsInConversation)
         {
             StartCoroutine(EndConversation());

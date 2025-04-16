@@ -60,10 +60,10 @@ public class SheriffController : MonoBehaviour
 
     private void HandleEndConversation()
     {
+        Debug.LogWarning("Ending current conversation: " + DialogueManager.Instance.GetCurrentConversation);
         if (DialogueManager.Instance.GetCurrentConversation == headOutConversation)
             LoadSceneWithFade(1);
     }
-
 
     private void Update()
     {
@@ -95,7 +95,7 @@ public class SheriffController : MonoBehaviour
     {
         if (isReturning) return;
         isReturning = true;
-
+        
         Sequence sequence = DOTween.Sequence();
 
         // Ensure image is visible and alpha 0

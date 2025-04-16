@@ -3164,6 +3164,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1275645519}
   minReactionTime: 0.3
   maxReactionTime: 0.5
+  isPassiveEnemy: 1
 --- !u!82 &1071354129
 AudioSource:
   m_ObjectHideFlags: 0

@@ -93,7 +93,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         float reactionTime = Time.time - drawStartTime;
 
         // Player was slower — enemy wins
-        if (reactionTime > enemyReactionTime)
+        if (reactionTime > enemyReactionTime && !IsPassiveEnemy())
         {
             Debug.Log("Player was slower than the enemy. No QTE triggered.");
             canShoot = false;
@@ -214,6 +214,11 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     public void SetEnemyReactionTime(float reactionTime)
     {
         enemyReactionTime = reactionTime;
+    }
+
+    public bool IsPassiveEnemy()
+    {
+        return currentEnemyController.isPassiveEnemy;
     }
 }
  

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class EnemyController : CharacterController
 {
     [SerializeField] private float minReactionTime = 0.3f;
     [SerializeField] private float maxReactionTime = 0.5f;
+    public bool isPassiveEnemy;
     private float reactionTime;
     private bool canShoot = false;
     private bool hasShot = false;
@@ -30,6 +32,7 @@ public class EnemyController : CharacterController
 
     private void PrepareToShoot()
     {
+        if (isPassiveEnemy) return;
         reactionTime = Random.Range(minReactionTime, maxReactionTime);
         FastDrawManager.Instance.SetEnemyReactionTime(reactionTime);
         canShoot = true;
@@ -54,6 +57,7 @@ public class EnemyController : CharacterController
 
     private void PlayerFiredEarly()
     {
+        if (isPassiveEnemy) return;
         hasShot = true;
         StartCoroutine(PlayerFiredEarlyRoutine());
     }
