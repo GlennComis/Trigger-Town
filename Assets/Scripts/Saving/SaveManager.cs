@@ -29,6 +29,7 @@ public class SaveManager : MonoBehaviour
         if (!File.Exists(SavePath))
         {
             Debug.LogWarning("Save file not found.");
+            Save();
             return;
         }
 

@@ -2,4 +2,5 @@
 {
     public const string TutorialTown = "tutorial.town";
     public const string TutorialSheriff = "tutorial.sheriff";
+    public const string TutorialFastDraw = "tutorial.fastdraw";
 }

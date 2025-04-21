@@ -199,6 +199,7 @@ GameObject:
   - component: {fileID: 21813544}
   - component: {fileID: 21813545}
   - component: {fileID: 21813546}
+  - component: {fileID: 21813547}
   m_Layer: 0
   m_Name: FastDrawManager
   m_TagString: Untagged
@@ -252,6 +253,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44f06357a11a22e4e958b8353e36f0d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &21813547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21813543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0f30b3146724409a7e816bfce5bebb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fastDrawTutorialConversation: {fileID: 11400000, guid: 191fe9f75a81f934a9ac77690ebf8e7d, type: 2}
+  qteDialogueConversation: {fileID: 11400000, guid: 9df638bcdf9af7f49abbd0828aa89e66, type: 2}
+  earlyFireDialogueConversation: {fileID: 11400000, guid: 4e10267c99c237245b9cf8b91e414836, type: 2}
+  missedQTEConversation: {fileID: 11400000, guid: 2734be1c5cf32714490126be6fd16220, type: 2}
+  completedQTE: {fileID: 11400000, guid: 77b8bb7aad2ce754fbf91df76f861bef, type: 2}
+  fastDrawManager: {fileID: 21813545}
+  timingQTE: {fileID: 1988333970}
+  isInTutorial: 0
 --- !u!1 &77978356
 GameObject:
   m_ObjectHideFlags: 0

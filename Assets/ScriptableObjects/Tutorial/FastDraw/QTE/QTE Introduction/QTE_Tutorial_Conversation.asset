@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98d5b2043a9e4987a3fa2455f846e9d9, type: 3}
+  m_Name: QTE_Tutorial_Conversation
+  m_EditorClassIdentifier: 
+  dialogueScriptableObjects:
+  - {fileID: 11400000, guid: 966f64fb090b6c54a92ea32197143bd9, type: 2}
+  - {fileID: 11400000, guid: 938e806b1231af54da32f43458cc34df, type: 2}
+  - {fileID: 11400000, guid: 6907de0133405874a9bde506ae4cb02f, type: 2}

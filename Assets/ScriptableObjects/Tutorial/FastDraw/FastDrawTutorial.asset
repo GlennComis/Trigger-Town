@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98d5b2043a9e4987a3fa2455f846e9d9, type: 3}
+  m_Name: FastDrawTutorial
+  m_EditorClassIdentifier: 
+  dialogueScriptableObjects:
+  - {fileID: 11400000, guid: 68035b5d786189641ac0bfe83eb7796a, type: 2}
+  - {fileID: 11400000, guid: 105cb559270355542983732c9ff40446, type: 2}
+  - {fileID: 11400000, guid: 3735bf0c74349474c8d895918dc4c4d1, type: 2}
+  - {fileID: 11400000, guid: 9589f5595e0c5a94c946f797ae43bdd8, type: 2}
+  - {fileID: 11400000, guid: 10754723cb33e9d47b82da83e3ba35c4, type: 2}
+  - {fileID: 11400000, guid: d4ca7e4b10997ec4bb495f0b1c829158, type: 2}

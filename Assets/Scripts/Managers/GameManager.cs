@@ -12,6 +12,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         base.Awake();
         DontDestroyOnLoadManager.MarkDontDestroy(this.gameObject);
     }
-    
+
+    public void Save()
+    {
+        saveManager.Save();
+    }
+
+    public void Load()
+    {
+        saveManager.Load();
+    }
     
 }

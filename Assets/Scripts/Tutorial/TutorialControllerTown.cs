@@ -17,6 +17,7 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
 
     private void Start()
     {
+        hasCompleted = true;
         if(!hasCompleted)
             StartTutorial();
     }
@@ -93,6 +94,7 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
         hasCompleted = true;
         TownManager.Instance.EnableBuildingSelection();
         TownManager.Instance.EnableArrowInstanceGameObject(); 
+        GameManager.Instance.Save();
         Debug.Log("Town Tutorial completed");
     }
     

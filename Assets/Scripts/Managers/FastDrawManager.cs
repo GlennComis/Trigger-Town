@@ -25,24 +25,30 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
     private float enemyReactionTime = -1f;
     private bool fightEnded;
+    private bool drawStarted;
     
     public bool IsActionPaused { get; private set; } = false;
     
 
     [Header("Controllers")]
-    [SerializeField]
-    private EnemyController currentEnemyController;
-    [SerializeField]
-    private PlayerController playerController;
-    [SerializeField]
-    private RewardSystemController rewardSystemController;
+    [SerializeField] private EnemyController currentEnemyController;
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private RewardSystemController rewardSystemController;
     [SerializeField] private TimingQTE timingQTE;
-    
+    private TutorialControllerFastDraw tutorialControllerFastDraw;
+    public static event System.Action OnQTEStarted;
+    public static event System.Action OnQTEReset;
 
     protected override void Awake()
     {
         base.Awake();
-        StartDraw();
+        tutorialControllerFastDraw = GetComponent<TutorialControllerFastDraw>();
+    }
+
+    protected void Start()
+    {
+        if(tutorialControllerFastDraw.IsInTutorial())
+            StartDraw();
     }
 
     private void Reset()
@@ -53,11 +59,26 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         flawlessGame = true;
         fastestDrawTime = -1f;
     }
-    private void StartDraw()
+    public void StartDraw()
     {
-        if (fightEnded) return;
-        Debug.Log("Starting round");
+        if (fightEnded || drawStarted) return;
+        drawStarted = true;
         activeDrawSequenceRoutine = StartCoroutine(DrawSequence());
+    }
+    
+    public void StopDraw()
+    {
+        if (activeDrawSequenceRoutine != null)
+        {
+            StopCoroutine(activeDrawSequenceRoutine);
+            activeDrawSequenceRoutine = null;
+        }
+
+        canShoot = false;
+        hasResult = false;
+        drawStarted = false;
+
+        UIManager.Instance.SetDrawText(false); // Hide the draw banner
     }
 
     private IEnumerator DrawSequence()
@@ -69,18 +90,21 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
         UIManager.Instance.SetDrawText(true);
         canShoot = true;
+        drawStarted = false;
         drawStartTime = Time.time;
         OnDrawSignal?.Invoke();
     }
 
     public void PlayerShot()
     {
+        if (IsActionPaused) return;
+        
         if (!canShoot)
         {
-            Debug.Log("Player shot too soon and missed!");
+            Debug.Log("Player tried to shoot before draw signal.");
             playerController.Shoot();
             OnFiredEarly?.Invoke();
-
+        
             if (activeDrawSequenceRoutine != null)
             {
                 StopCoroutine(activeDrawSequenceRoutine);
@@ -110,16 +134,21 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
         timingQTE.PrepareIntroState();
         timingQTE.OnQTEComplete += HandleQTEResult;
+
+        OnQTEStarted?.Invoke();
+
         timingQTE.PlayQTEIntro();
     }
 
     private void HandleQTEResult(QTEResult result)
     {
+        Debug.LogError("Handle result");
         ResumeAction();
         timingQTE.OnQTEComplete -= HandleQTEResult;
 
         if (result == QTEResult.Good || result == QTEResult.Perfect)
         {
+            Debug.LogError("Player shot");
             float reactionTime = Time.time - drawStartTime;
 
             if (fastestDrawTime == -1f || reactionTime < fastestDrawTime)
@@ -175,6 +204,8 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         
         UIManager.Instance.SetDrawText(false);
         StartDraw();
+        
+        OnQTEReset?.Invoke();
     }
 
     public void RoundEnd(bool playerWon)
@@ -203,11 +234,13 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     
     public void PauseAction()
     {
+        Debug.Log("Pause action");
         IsActionPaused = true;
     }
 
     public void ResumeAction()
     {
+        Debug.Log("Resume action");
         IsActionPaused = false;
     }
     

@@ -32,6 +32,7 @@ public class TimingQTE : MonoBehaviour
     private bool isActive = false;
 
     public System.Action<QTEResult> OnQTEComplete;
+    public System.Action OnQTEStarted;
     
     [Header("UI Elements")]
     [SerializeField] private GameObject qteParent;
@@ -45,6 +46,7 @@ public class TimingQTE : MonoBehaviour
     [SerializeField] private float backgroundFadeDuration = 0.4f;
     [SerializeField] private float interactiveFadeDuration = 0.3f;
     [SerializeField] private float backgroundTargetAlpha = 154f / 255f;
+    
     
     private void Start()
     {
@@ -102,7 +104,9 @@ public class TimingQTE : MonoBehaviour
 
     public void StartQTE()
     {
+        Debug.Log("Start QTE");
         isActive = true;
+        OnQTEStarted?.Invoke();
         gameObject.SetActive(true);
 
         // Init Timer
@@ -198,6 +202,17 @@ public class TimingQTE : MonoBehaviour
 
         Debug.Log("QTE timed out: auto miss");
         OnQTEComplete?.Invoke(QTEResult.Miss);
+    }
+    
+    public void PauseQTE()
+    {
+        Debug.Log("Pause QTE");
+        isActive = false;
+    }
+
+    public void ResumeQTE()
+    {
+        isActive = true;
     }
 }
 
