@@ -164,7 +164,12 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         }
     }
 
-
+    public void SubscribeResultHandle()
+    {
+        timingQTE.OnQTEComplete -= HandleQTEResult;
+        timingQTE.OnQTEComplete += HandleQTEResult;
+    }
+    
     public void DetermineFirstShooter(bool isPlayer = false)
     {
         if (hasResult) return;
@@ -224,7 +229,8 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
         if (playerWon)
         {
-             UIManager.Instance.SetWinScreen(rewardSystemController.GetRewards());
+            PauseAction();
+            UIManager.Instance.SetWinScreen(rewardSystemController.GetRewards());
         }
         else
         {

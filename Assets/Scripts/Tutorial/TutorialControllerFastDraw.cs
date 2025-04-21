@@ -106,6 +106,10 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
         {
             timingQTE.ResumeQTE();
         }
+        else if (DialogueManager.Instance.GetCurrentConversation == missedQTEConversation)
+        {
+            fastDrawManager.SubscribeResultHandle();
+        }
     }
 
     private void HandleQTEStart()
