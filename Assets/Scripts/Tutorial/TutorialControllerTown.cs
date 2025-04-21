@@ -15,11 +15,15 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
     private bool hasCompleted;
     private int currentStep;
 
+    [SerializeField]
+    private GameObject newsBar;
+
     private void Start()
     {
-        hasCompleted = true;
-        if(!hasCompleted)
+        if (!hasCompleted)
             StartTutorial();
+        else
+            newsBar.SetActive(true);
     }
     
     private void OnEnable()
@@ -44,7 +48,7 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
 
     public void RestoreData(object data)
     {
-        if (data == null)
+        /*if (data == null)
         {
             Debug.LogWarning($"No save data found for {SaveKey}, using defaults.");
             return;
@@ -57,7 +61,7 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
         else
         {
             Debug.LogError($"Invalid data type for {SaveKey}: expected TutorialTownData.");
-        }
+        }*/
     }
     
     private void HandleDialogueTrigger(DialogueScriptableObject dialogue)
@@ -95,6 +99,7 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
         TownManager.Instance.EnableBuildingSelection();
         TownManager.Instance.EnableArrowInstanceGameObject(); 
         GameManager.Instance.Save();
+        newsBar.SetActive(true);
         Debug.Log("Town Tutorial completed");
     }
     

@@ -2004,6 +2004,7 @@ MonoBehaviour:
   - {fileID: 822250981}
   tutorialOverlayController: {fileID: 141935585}
   townIntroductionSheriff: {fileID: 11400000, guid: bdc9805a0fd785b42833f4de71af46f1, type: 2}
+  newsBar: {fileID: 1437110597}
 --- !u!1 &1787256056 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3358096684324677809, guid: 87d69fd9615cda84aa273713fb248b59, type: 3}

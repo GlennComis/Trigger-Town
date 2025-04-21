@@ -102,7 +102,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         if (!canShoot)
         {
             Debug.Log("Player tried to shoot before draw signal.");
-            playerController.Shoot();
+            PlayerShootAnimation();
             OnFiredEarly?.Invoke();
         
             if (activeDrawSequenceRoutine != null)
@@ -154,7 +154,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
             if (fastestDrawTime == -1f || reactionTime < fastestDrawTime)
                 fastestDrawTime = reactionTime;
 
-            playerController.Shoot();
+            PlayerShootAnimation();
             DetermineFirstShooter(true);
         }
         else
@@ -168,6 +168,11 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     {
         timingQTE.OnQTEComplete -= HandleQTEResult;
         timingQTE.OnQTEComplete += HandleQTEResult;
+    }
+
+    public void PlayerShootAnimation()
+    {
+        playerController.Shoot();
     }
     
     public void DetermineFirstShooter(bool isPlayer = false)

@@ -129,6 +129,7 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
 
         if (result == QTEResult.Miss)
         {
+            fastDrawManager.PlayerShootAnimation();
             StartCoroutine(HandleQTERetry());
         }
         else
