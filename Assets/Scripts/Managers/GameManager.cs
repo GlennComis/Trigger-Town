@@ -1,10 +1,8 @@
-using System;
 using UnityEngine;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
-    [SerializeField]
-    private SaveManager saveManager;
+    [SerializeField] private SaveManager saveManager;
 
     protected override void Awake()
     {
@@ -13,14 +11,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         DontDestroyOnLoadManager.MarkDontDestroy(this.gameObject);
     }
 
-    public void Save()
-    {
-        saveManager.Save();
-    }
-
-    public void Load()
-    {
-        saveManager.Load();
-    }
-    
+    public void Save() => saveManager.Save();
+    public void Load() => saveManager.Load();
 }

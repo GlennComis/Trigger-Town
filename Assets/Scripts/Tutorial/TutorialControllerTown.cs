@@ -48,21 +48,24 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
 
     public void RestoreData(object data)
     {
-        /*if (data == null)
+        if (data == null)
         {
             Debug.LogWarning($"No save data found for {SaveKey}, using defaults.");
             return;
         }
 
-        if (data is TutorialTownData saved)
+        if (data is string json)
         {
+            var saved = JsonUtility.FromJson<TutorialTownData>(json);
             hasCompleted = saved.hasCompleted;
         }
         else
         {
-            Debug.LogError($"Invalid data type for {SaveKey}: expected TutorialTownData.");
-        }*/
+            Debug.LogError($"Invalid data format for {SaveKey}, expected JSON string.");
+        }
     }
+
+
     
     private void HandleDialogueTrigger(DialogueScriptableObject dialogue)
     {
