@@ -1,41 +1,47 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class EnemyController : CharacterController
 {
-    [SerializeField] private float minReactionTime = 0.3f;
-    [SerializeField] private float maxReactionTime = 0.5f;
-    public bool isPassiveEnemy;
+    [Header("Enemy Settings")]
+    [SerializeField] private EnemyData enemyData;
+
     private float reactionTime;
     private bool canShoot = false;
     private bool hasShot = false;
-    private WaitForSeconds playerFiredEarlyReactionDelay = new WaitForSeconds(.5f);
 
     private Coroutine shootRoutine;
+    private readonly WaitForSeconds playerFiredEarlyDelay = new WaitForSeconds(0.5f);
 
     private void OnEnable()
     {
         FastDrawManager.OnDrawSignal += PrepareToShoot;
-        FastDrawManager.OnDrawResult += ProcessResult;
-        FastDrawManager.OnFiredEarly += PlayerFiredEarly;
+        FastDrawManager.OnDrawResult += HandleResult;
+        FastDrawManager.OnFiredEarly += OnPlayerFiredEarly;
     }
 
     private void OnDisable()
     {
         FastDrawManager.OnDrawSignal -= PrepareToShoot;
-        FastDrawManager.OnDrawResult -= ProcessResult;
-        FastDrawManager.OnFiredEarly -= PlayerFiredEarly;
+        FastDrawManager.OnDrawResult -= HandleResult;
+        FastDrawManager.OnFiredEarly -= OnPlayerFiredEarly;
     }
 
     private void PrepareToShoot()
     {
-        if (isPassiveEnemy) return;
-        reactionTime = Random.Range(minReactionTime, maxReactionTime);
-        FastDrawManager.Instance.SetEnemyReactionTime(reactionTime);
+        if (enemyData.IsBoss())
+        {
+            // Optional: boss intro logic or delay here
+        }
+
+        if (enemyData.isPassive)
+            return;
+
         canShoot = true;
         hasShot = false;
+        reactionTime = Random.Range(enemyData.minReactionTime, enemyData.maxReactionTime);
+
+        FastDrawManager.Instance.SetEnemyReactionTime(reactionTime);
 
         if (shootRoutine != null)
             StopCoroutine(shootRoutine);
@@ -43,51 +49,60 @@ public class EnemyController : CharacterController
         shootRoutine = StartCoroutine(ShootAfterDelay());
     }
 
-    private void ProcessResult(bool playerWon)
+    private IEnumerator ShootAfterDelay()
     {
-        if (playerWon)
-        {
-            TakeDamage();
-        }
+        yield return new WaitForSeconds(reactionTime);
 
-        hasShot = true;
-        canShoot = false;
+        if (!hasShot && !FastDrawManager.Instance.isActionPaused)
+        {
+            Shoot();
+            hasShot = true;
+            FastDrawManager.Instance.DetermineFirstShooter();
+        }
     }
 
-    private void PlayerFiredEarly()
+    private void OnPlayerFiredEarly()
     {
-        if (isPassiveEnemy) return;
+        if (enemyData.isPassive)
+            return;
+
         hasShot = true;
         StartCoroutine(PlayerFiredEarlyRoutine());
     }
 
     private IEnumerator PlayerFiredEarlyRoutine()
     {
-        yield return playerFiredEarlyReactionDelay;
+        yield return playerFiredEarlyDelay;
 
-        if (!FastDrawManager.Instance.IsActionPaused)
+        if (!FastDrawManager.Instance.isActionPaused)
         {
             Shoot();
             FastDrawManager.Instance.DetermineFirstShooter();
         }
     }
 
-    private IEnumerator ShootAfterDelay()
+    private void HandleResult(bool playerWon)
     {
-        yield return new WaitForSeconds(reactionTime);
+        if (playerWon)
+            TakeDamage();
 
-        // Stop if logic is paused or already shot
-        if (hasShot || FastDrawManager.Instance.IsActionPaused)
-            yield break;
-
-        Shoot();
+        canShoot = false;
         hasShot = true;
-        FastDrawManager.Instance.DetermineFirstShooter();
     }
 
     protected override void Die()
     {
         base.Die();
         FastDrawManager.Instance.RoundEnd(true);
+    }
+
+    public EnemyData GetEnemyData()
+    {
+        return enemyData;
+    }
+
+    public bool IsPassiveEnemy()
+    {
+        return enemyData.isPassive;
     }
 }

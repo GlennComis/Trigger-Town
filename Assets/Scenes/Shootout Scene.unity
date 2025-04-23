@@ -200,6 +200,7 @@ GameObject:
   - component: {fileID: 21813545}
   - component: {fileID: 21813546}
   - component: {fileID: 21813547}
+  - component: {fileID: 21813548}
   m_Layer: 0
   m_Name: FastDrawManager
   m_TagString: Untagged
@@ -234,13 +235,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff5a63dcb4923924995b7a4e44c0b500, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthIndicatorPrefab: {fileID: 6009811994733519526, guid: 8c21d7fd0248a10458ec2f5a28a2c4d6, type: 3}
   minDrawTime: 5
   maxDrawTime: 10
   currentEnemyController: {fileID: 1071354128}
   playerController: {fileID: 615973922}
   rewardSystemController: {fileID: 21813546}
-  timingQTE: {fileID: 1988333970}
+  qteManager: {fileID: 21813548}
+  currentQTEType: 0
+  isActionPaused: 0
+  healthIndicatorPrefab: {fileID: 6009811994733519526, guid: 8c21d7fd0248a10458ec2f5a28a2c4d6, type: 3}
 --- !u!114 &21813546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,6 +276,19 @@ MonoBehaviour:
   fastDrawManager: {fileID: 21813545}
   timingQTE: {fileID: 1988333970}
   isInTutorial: 0
+--- !u!114 &21813548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21813543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8b14dc391e94c4b83cb93fbfad0c5d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timingQTE: {fileID: 1988333970}
 --- !u!1001 &51953330
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3838,9 +3854,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0cfee47fb3e83684096571837cb9aeaa, type: 3}
   - {fileID: 8300000, guid: 5a3f3e4c8cad22841b9117d074f9a923, type: 3}
   spriteRenderer: {fileID: 1275645519}
-  minReactionTime: 0.3
-  maxReactionTime: 0.5
-  isPassiveEnemy: 1
+  enemyData: {fileID: 11400000, guid: 44643d0351be3f64d8deb2caf80fb92b, type: 2}
 --- !u!82 &1071354129
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6602,17 +6616,17 @@ MonoBehaviour:
   sweetSpot: {fileID: 427498101}
   sliderBar: {fileID: 1409735057}
   qteTimerSlider: {fileID: 146078106}
+  qteParent: {fileID: 609836170}
+  backgroundImage: {fileID: 609836172}
+  topBar: {fileID: 1155373771}
+  bottomBar: {fileID: 336466787}
+  interactiveVisuals: {fileID: 1834808171}
   moveSpeed: 400
   perfectThreshold: 2
   sweetSpotWidth: 40
   leftOffset: 20
   rightOffset: 20
   qteDuration: 10
-  qteParent: {fileID: 609836170}
-  backgroundImage: {fileID: 609836172}
-  topBar: {fileID: 1155373771}
-  bottomBar: {fileID: 336466787}
-  interactiveVisuals: {fileID: 1834808171}
   barSlideDuration: 0.6
   backgroundFadeDuration: 0.4
   interactiveFadeDuration: 0.3

@@ -3,41 +3,63 @@ using UnityEngine;
 
 public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 {
-    public GameObject healthIndicatorPrefab;
+    #region Events
+
     public static event System.Action OnDrawSignal;
     public static event System.Action<bool> OnDrawResult;
     public static event System.Action OnFiredEarly;
+    public static event System.Action OnQTEStarted;
+    public static event System.Action OnQTEReset;
+
+    #endregion
+
+    #region Serialized Fields
 
     [Header("Draw Time")]
     [SerializeField] private float minDrawTime = 5f;
     [SerializeField] private float maxDrawTime = 10f;
-    private float drawStartTime;
-    
-    private bool canShoot = false;
-    private bool hasResult = false;
-    
-    private int playerStreak = 0;
-    private int longestPlayerStreak = 0;
-    private bool flawlessGame = true;
-    private float fastestDrawTime = -1f;
-
-    private Coroutine activeDrawSequenceRoutine;
-
-    private float enemyReactionTime = -1f;
-    private bool fightEnded;
-    private bool drawStarted;
-    
-    public bool IsActionPaused { get; private set; } = false;
-    
 
     [Header("Controllers")]
     [SerializeField] private EnemyController currentEnemyController;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private RewardSystemController rewardSystemController;
-    [SerializeField] private TimingQTE timingQTE;
+
+    [Header("Quick Time Events")]
+    [SerializeField] private QTEManager qteManager;
+    [SerializeField] private QTEType currentQTEType = QTEType.Timing;
+
+    #endregion
+
+    #region Private Fields
+
+    private float drawStartTime;
+    private float enemyReactionTime = -1f;
+
+    private Coroutine activeDrawSequenceRoutine;
+
+    private bool canShoot = false;
+    private bool hasResult = false;
+    private bool fightEnded = false;
+    private bool drawStarted = false;
+
+    private int playerStreak = 0;
+    private int longestPlayerStreak = 0;
+    private bool flawlessGame = true;
+    private float fastestDrawTime = -1f;
+
     private TutorialControllerFastDraw tutorialControllerFastDraw;
-    public static event System.Action OnQTEStarted;
-    public static event System.Action OnQTEReset;
+    private IQTE activeQTE;
+
+    #endregion
+
+    #region Public Fields
+    
+    public bool isActionPaused = false;
+    public GameObject healthIndicatorPrefab;
+    
+    #endregion
+
+    #region Unity Lifecycle
 
     protected override void Awake()
     {
@@ -45,113 +67,99 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         tutorialControllerFastDraw = GetComponent<TutorialControllerFastDraw>();
     }
 
-    protected void Start()
+    private void Start()
     {
-        if(tutorialControllerFastDraw.IsInTutorial())
+        if (tutorialControllerFastDraw.IsInTutorial())
             StartDraw();
     }
 
-    private void Reset()
-    {
-        fightEnded = false;
-        playerStreak = 0;
-        longestPlayerStreak = 0;
-        flawlessGame = true;
-        fastestDrawTime = -1f;
-    }
+    #endregion
+
+    #region Draw Lifecycle
+
     public void StartDraw()
     {
         if (fightEnded || drawStarted) return;
         drawStarted = true;
         activeDrawSequenceRoutine = StartCoroutine(DrawSequence());
     }
-    
+
     public void StopDraw()
     {
-        if (activeDrawSequenceRoutine != null)
-        {
-            StopCoroutine(activeDrawSequenceRoutine);
-            activeDrawSequenceRoutine = null;
-        }
-
+        StopActiveRoutine();
+        drawStarted = false;
         canShoot = false;
         hasResult = false;
-        drawStarted = false;
 
-        UIManager.Instance.SetDrawText(false); // Hide the draw banner
+        UIManager.Instance.SetDrawText(false);
     }
 
     private IEnumerator DrawSequence()
     {
         hasResult = false;
         canShoot = false;
-        float waitTime = Random.Range(minDrawTime, maxDrawTime);
-        yield return new WaitForSeconds(waitTime);
+
+        yield return new WaitForSeconds(Random.Range(minDrawTime, maxDrawTime));
+
+        drawStartTime = Time.time;
+        drawStarted = false;
+        canShoot = true;
 
         UIManager.Instance.SetDrawText(true);
-        canShoot = true;
-        drawStarted = false;
-        drawStartTime = Time.time;
         OnDrawSignal?.Invoke();
     }
 
+    #endregion
+
+    #region QTE Integration
+
     public void PlayerShot()
     {
-        if (IsActionPaused) return;
-        
+        if (isActionPaused) return;
+
         if (!canShoot)
         {
-            Debug.Log("Player tried to shoot before draw signal.");
             PlayerShootAnimation();
             OnFiredEarly?.Invoke();
-        
-            if (activeDrawSequenceRoutine != null)
-            {
-                StopCoroutine(activeDrawSequenceRoutine);
-                activeDrawSequenceRoutine = null;
-            }
-
+            StopActiveRoutine();
             return;
         }
 
         float reactionTime = Time.time - drawStartTime;
 
-        // Player was slower — enemy wins
         if (reactionTime > enemyReactionTime && !IsPassiveEnemy())
         {
-            Debug.Log("Player was slower than the enemy. No QTE triggered.");
             canShoot = false;
-            DetermineFirstShooter(false); // Enemy wins
+            DetermineFirstShooter(false);
             return;
         }
 
-        // Player was faster — trigger QTE
         canShoot = false;
         PauseAction();
 
-        if (fastestDrawTime == -1f || reactionTime < fastestDrawTime)
-            fastestDrawTime = reactionTime;
+        activeQTE = qteManager.GetQTE(currentQTEType);
+        if (activeQTE == null)
+        {
+            Debug.LogError($"No QTE found for type {currentQTEType}");
+            return;
+        }
 
-        timingQTE.PrepareIntroState();
-        timingQTE.OnQTEComplete += HandleQTEResult;
-
+        activeQTE.OnQTEComplete += HandleQTEResult;
+        activeQTE.InitializeVisualState();
         OnQTEStarted?.Invoke();
-
-        timingQTE.PlayQTEIntro();
+        activeQTE.PlayQTEIntro();
     }
 
     private void HandleQTEResult(QTEResult result)
     {
-        Debug.LogError("Handle result");
         ResumeAction();
-        timingQTE.OnQTEComplete -= HandleQTEResult;
+        if (activeQTE != null)
+            activeQTE.OnQTEComplete -= HandleQTEResult;
 
         if (result == QTEResult.Good || result == QTEResult.Perfect)
         {
-            Debug.LogError("Player shot");
             float reactionTime = Time.time - drawStartTime;
-
-            if (fastestDrawTime == -1f || reactionTime < fastestDrawTime)
+            if (fastestDrawTime < 0f || reactionTime < fastestDrawTime)
                 fastestDrawTime = reactionTime;
 
             PlayerShootAnimation();
@@ -159,77 +167,60 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         }
         else
         {
-            Debug.Log("QTE failed: player missed");
             DetermineFirstShooter(false);
         }
     }
 
     public void SubscribeResultHandle()
     {
-        timingQTE.OnQTEComplete -= HandleQTEResult;
-        timingQTE.OnQTEComplete += HandleQTEResult;
+        if (activeQTE != null)
+        {
+            activeQTE.OnQTEComplete -= HandleQTEResult;
+            activeQTE.OnQTEComplete += HandleQTEResult;
+        }
     }
 
-    public void PlayerShootAnimation()
-    {
-        playerController.Shoot();
-    }
-    
+    #endregion
+
+    #region Outcome Handling
+
     public void DetermineFirstShooter(bool isPlayer = false)
     {
         if (hasResult) return;
-        
         hasResult = true;
 
         if (isPlayer)
         {
-            Debug.Log("Player was faster");
             playerStreak++;
-            
             if (playerStreak > longestPlayerStreak)
-            {
                 longestPlayerStreak = playerStreak;
-            }
         }
         else
         {
-              flawlessGame = false;
-              Debug.Log("Enemy was faster");
+            flawlessGame = false;
         }
-        
+
         OnDrawResult?.Invoke(isPlayer);
-        
         StartCoroutine(ResetRoutine());
     }
 
     private IEnumerator ResetRoutine()
     {
-        if (activeDrawSequenceRoutine != null)
-        {
-            StopCoroutine(activeDrawSequenceRoutine);
-            activeDrawSequenceRoutine = null;
-        }
-        
+        StopActiveRoutine();
+
         yield return new WaitForSeconds(1f);
-        
+
         UIManager.Instance.SetDrawText(false);
         StartDraw();
-        
         OnQTEReset?.Invoke();
     }
 
     public void RoundEnd(bool playerWon)
     {
         UIManager.Instance.SetDrawText(false);
-        Debug.Log("Ending round");
         fightEnded = true;
-        
-        if (activeDrawSequenceRoutine != null)
-        {
-            StopCoroutine(activeDrawSequenceRoutine);
-            activeDrawSequenceRoutine = null;
-        }
-        
+
+        StopActiveRoutine();
         rewardSystemController.CalculateRewards(flawlessGame, fastestDrawTime, longestPlayerStreak);
 
         if (playerWon)
@@ -242,27 +233,30 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
             UIManager.Instance.SetDefeatScreen();
         }
     }
-    
-    public void PauseAction()
+
+    #endregion
+
+    #region Utility Methods
+
+    private void StopActiveRoutine()
     {
-        Debug.Log("Pause action");
-        IsActionPaused = true;
+        if (activeDrawSequenceRoutine != null)
+        {
+            StopCoroutine(activeDrawSequenceRoutine);
+            activeDrawSequenceRoutine = null;
+        }
     }
 
-    public void ResumeAction()
-    {
-        Debug.Log("Resume action");
-        IsActionPaused = false;
-    }
-    
-    public void SetEnemyReactionTime(float reactionTime)
-    {
-        enemyReactionTime = reactionTime;
-    }
+    public void PauseAction() => isActionPaused = true;
+    public void ResumeAction() => isActionPaused = false;
 
-    public bool IsPassiveEnemy()
-    {
-        return currentEnemyController.isPassiveEnemy;
-    }
+    public void PlayerShootAnimation() => playerController.Shoot();
+
+    public void SetEnemyReactionTime(float reactionTime) => enemyReactionTime = reactionTime;
+
+    public void SetQTEType(QTEType qteType) => currentQTEType = qteType;
+
+    public bool IsPassiveEnemy() => currentEnemyController.IsPassiveEnemy();
+
+    #endregion
 }
- 
