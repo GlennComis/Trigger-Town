@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : SingletonMonoBehaviour<UIManager>
 {
@@ -52,5 +53,10 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
     public void SetDefeatScreen()
     {
         defeatContainer.SetActive(true);
+    }
+
+    public void LoadTown()
+    {
+        SceneManager.LoadScene(0);
     }
 }
