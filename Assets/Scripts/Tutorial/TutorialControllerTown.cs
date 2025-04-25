@@ -98,6 +98,8 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
     
     private void HandleEndConversation()
     {
+        if (DialogueManager.Instance.GetCurrentConversation != tutorialOverlayController)
+            return;
         hasCompleted = true;
         TownManager.Instance.EnableBuildingSelection();
         TownManager.Instance.EnableArrowInstanceGameObject(); 

@@ -1017,6 +1017,7 @@ GameObject:
   - component: {fileID: 822250982}
   - component: {fileID: 822250981}
   - component: {fileID: 822250983}
+  - component: {fileID: 822250984}
   m_Layer: 0
   m_Name: Saloon
   m_TagString: Untagged
@@ -1140,6 +1141,25 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.61, y: 1.36}
   m_EdgeRadius: 0
+--- !u!114 &822250984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822250980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1bddefb25a84fc1affde11d870a6b25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneBuildIndex: 0
+  isOpen: 0
+  closedConversation: {fileID: 11400000, guid: f8171dbb153924be79643abe51367f69, type: 2}
+  fadeImage: {fileID: 0}
+  fadeDuration: 1
+  doorAnimator: {fileID: 0}
+  doorOpenTrigger: Open
 --- !u!1001 &889695586
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1346,6 +1366,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneBuildIndex: 2
+  isOpen: 1
+  closedConversation: {fileID: 0}
   fadeImage: {fileID: 1313352281}
   fadeDuration: 2
   doorAnimator: {fileID: 1692095207}
@@ -3342,6 +3364,7 @@ GameObject:
   - component: {fileID: 1941117948}
   - component: {fileID: 1941117947}
   - component: {fileID: 1941117949}
+  - component: {fileID: 1941117950}
   m_Layer: 0
   m_Name: Store
   m_TagString: Untagged
@@ -3466,6 +3489,25 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.13, y: 0.88}
   m_EdgeRadius: 0
+--- !u!114 &1941117950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941117946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1bddefb25a84fc1affde11d870a6b25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneBuildIndex: 0
+  isOpen: 0
+  closedConversation: {fileID: 11400000, guid: e3bde9c5d81514cda903775c5fe0ad03, type: 2}
+  fadeImage: {fileID: 0}
+  fadeDuration: 1
+  doorAnimator: {fileID: 0}
+  doorOpenTrigger: Open
 --- !u!1 &1965416050
 GameObject:
   m_ObjectHideFlags: 0
@@ -3786,7 +3828,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 0
-  orthographic size: 2.0033333
+  orthographic size: 2.4225
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
