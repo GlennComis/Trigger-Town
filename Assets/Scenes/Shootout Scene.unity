@@ -235,8 +235,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff5a63dcb4923924995b7a4e44c0b500, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minDrawTime: 5
-  maxDrawTime: 10
+  minDrawTime: 3
+  maxDrawTime: 5
   currentEnemyController: {fileID: 1071354128}
   playerController: {fileID: 615973922}
   rewardSystemController: {fileID: 21813546}
@@ -842,7 +842,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 353179243}
   m_HandleRect: {fileID: 0}
@@ -2462,7 +2462,7 @@ GameObject:
   - component: {fileID: 609836172}
   - component: {fileID: 609836174}
   m_Layer: 5
-  m_Name: QTE
+  m_Name: Timing QTE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

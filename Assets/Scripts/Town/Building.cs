@@ -25,7 +25,17 @@ public class Building : MonoBehaviour, IEnterable
     private void Awake()
     {
         if (doorAnimator != null)
-            doorAnimator.speed = 0f; // Prevent auto-play
+            doorAnimator.speed = 0f;
+    }
+
+    private void OnEnable()
+    {
+        DialogueManager.OnEndConversation += HandleEndConversation;
+    }
+
+    private void OnDisable()
+    {
+        DialogueManager.OnEndConversation -= HandleEndConversation;
     }
 
     public void EnterBuilding()
@@ -36,6 +46,7 @@ public class Building : MonoBehaviour, IEnterable
         {
             if (closedConversation != null && !DialogueManager.Instance.IsInConversation)
             {
+                TownManager.Instance.DisableBuildingSelection();
                 DialogueManager.Instance.SetCurrentConversation(closedConversation, true);
             }
             else
@@ -48,7 +59,6 @@ public class Building : MonoBehaviour, IEnterable
         isTransitioning = true;
         Debug.Log($"Entering building: {gameObject.name}", gameObject);
 
-        // Play door animation if available
         if (doorAnimator != null)
         {
             doorAnimator.speed = 1f;
@@ -56,11 +66,18 @@ public class Building : MonoBehaviour, IEnterable
                 doorAnimator.SetTrigger(doorOpenTrigger);
         }
 
-        // Fade and load scene
         fadeImage.raycastTarget = true;
         fadeImage.DOFade(1f, fadeDuration).OnComplete(() =>
         {
             SceneManager.LoadScene(sceneBuildIndex);
         });
+    }
+
+    private void HandleEndConversation()
+    {
+        if (DialogueManager.Instance.GetCurrentConversation == closedConversation)
+        {
+            TownManager.Instance.EnableBuildingSelection();
+        }
     }
 }

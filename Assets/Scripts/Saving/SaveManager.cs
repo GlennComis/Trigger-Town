@@ -49,7 +49,7 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Game loaded.");
+        Debug.Log("Game loaded from " + SavePath);
     }
 
     [System.Serializable]

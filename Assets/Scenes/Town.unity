@@ -3214,6 +3214,8 @@ MonoBehaviour:
   bounceHeight: 0.1
   bounceDuration: 1
   bounceEase: 4
+  initialHoldDelay: 0.1
+  repeatRate: 0.2
 --- !u!114 &1753416721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3828,7 +3830,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 0
-  orthographic size: 2.4225
+  orthographic size: 1.8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

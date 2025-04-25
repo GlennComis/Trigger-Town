@@ -20,10 +20,16 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
 
     private void Start()
     {
+        hasCompleted = GameManager.Instance.hasCompletedTownTutorial;
+        
         if (!hasCompleted)
             StartTutorial();
         else
+        {
             newsBar.SetActive(true);
+            EnableArrow();
+        }
+        
     }
     
     private void OnEnable()
@@ -98,13 +104,15 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
     
     private void HandleEndConversation()
     {
-        if (DialogueManager.Instance.GetCurrentConversation != tutorialOverlayController)
+        if (DialogueManager.Instance.GetCurrentConversation != townIntroductionSheriff)
             return;
+        
         hasCompleted = true;
         TownManager.Instance.EnableBuildingSelection();
         TownManager.Instance.EnableArrowInstanceGameObject(); 
         GameManager.Instance.Save();
         newsBar.SetActive(true);
+        GameManager.Instance.CompleteTownTutorial();
         Debug.Log("Town Tutorial completed");
     }
     
@@ -122,5 +130,10 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
     {
         yield return TownManager.Instance.ArrowInstanceExists();
         TownManager.Instance.DisableArrowInstanceGameObject();
+    }
+    
+    private static void EnableArrow()
+    {
+        TownManager.Instance.EnableArrowInstanceGameObject();
     }
 }

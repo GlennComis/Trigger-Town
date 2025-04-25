@@ -16,44 +16,116 @@ public class TownManager : SingletonMonoBehaviour<TownManager>
     public float bounceDuration = 0.4f;
     public Ease bounceEase = Ease.InOutSine;
 
+    [Header("Hold Navigation")]
+    [SerializeField] private float initialHoldDelay = 0.4f;
+    [SerializeField] private float repeatRate = 0.15f;
+
     private GameObject currentArrowInstance;
     private Tween arrowBounceTween;
     private int currentIndex = 0;
-
     private bool canSelect = true;
+
+    // Hold input tracking
+    private bool isHoldingLeft;
+    private bool isHoldingRight;
+    private float holdTimerLeft;
+    private float holdTimerRight;
+    private float repeatTimer;
 
     private void Start()
     {
         if (buildings == null || buildings.Count == 0)
         {
-            Debug.LogError("No buildings assigned to TownController.");
+            Debug.LogError("No buildings assigned to TownManager.");
             return;
         }
 
-        CreateArrowIndicator(buildings[currentIndex]);
+        var lastKnownIndex = GameManager.Instance.lastKnowBuildingIndex;
+        
+        if (lastKnownIndex == -1)
+        {
+            CreateArrowIndicator(buildings[1]);
+            currentIndex = 1;
+        }
+        else
+        {
+            CreateArrowIndicator(buildings[lastKnownIndex]);
+            currentIndex = lastKnownIndex;
+        }
     }
 
     private void Update()
     {
         if (!canSelect) return;
-        HandleArrowKeyInput();
+
+        HandleArrowKeyHold();
         HandleSelectionInput();
     }
 
-    private void HandleArrowKeyInput()
+    private void HandleArrowKeyHold()
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        bool rightHeld = Input.GetKey(KeyCode.RightArrow);
+        bool leftHeld = Input.GetKey(KeyCode.LeftArrow);
+
+        // RIGHT
+        if (rightHeld)
         {
-            currentIndex = (currentIndex + 1) % buildings.Count;
-            UpdateArrowPosition();
+            if (!isHoldingRight)
+            {
+                isHoldingRight = true;
+                holdTimerRight = initialHoldDelay;
+                MoveArrowRight(); // First move
+            }
+            else
+            {
+                holdTimerRight -= Time.deltaTime;
+                if (holdTimerRight <= 0f)
+                {
+                    repeatTimer -= Time.deltaTime;
+                    if (repeatTimer <= 0f)
+                    {
+                        MoveArrowRight();
+                        repeatTimer = repeatRate;
+                    }
+                }
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else
         {
-            currentIndex = (currentIndex - 1 + buildings.Count) % buildings.Count;
-            UpdateArrowPosition();
+            isHoldingRight = false;
+            holdTimerRight = 0f;
+        }
+
+        // LEFT
+        if (leftHeld)
+        {
+            if (!isHoldingLeft)
+            {
+                isHoldingLeft = true;
+                holdTimerLeft = initialHoldDelay;
+                MoveArrowLeft(); // First move
+            }
+            else
+            {
+                holdTimerLeft -= Time.deltaTime;
+                if (holdTimerLeft <= 0f)
+                {
+                    repeatTimer -= Time.deltaTime;
+                    if (repeatTimer <= 0f)
+                    {
+                        MoveArrowLeft();
+                        repeatTimer = repeatRate;
+                    }
+                }
+            }
+        }
+        else
+        {
+            isHoldingLeft = false;
+            holdTimerLeft = 0f;
         }
     }
-    
+
     private void HandleSelectionInput()
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -99,14 +171,11 @@ public class TownManager : SingletonMonoBehaviour<TownManager>
         {
             float localTop = sr.sprite.bounds.max.y;
             Vector3 localTopWorld = target.TransformPoint(new Vector3(0, localTop, 0));
-
-            // Set arrow position above that, with extra padding
             anchorPosition = localTopWorld + new Vector3(0, heightPadding, 0);
         }
 
         currentArrowInstance.transform.position = anchorPosition;
     }
-
 
     private void AnimateArrow()
     {
@@ -115,12 +184,23 @@ public class TownManager : SingletonMonoBehaviour<TownManager>
             .SetEase(bounceEase)
             .SetLoops(-1, LoopType.Yoyo);
     }
-    
-    /// <summary>
-    /// The building index might change if we change the order of the List
-    /// Check the buildings variable in the inspector to see the exact order
-    /// </summary>
-    /// <param name="buildingIndex"></param>
+
+    private void MoveArrowRight()
+    {
+        currentIndex = (currentIndex + 1) % buildings.Count;
+        UpdateArrowPosition();
+        repeatTimer = repeatRate;
+        UpdateLastKnowBuildingIndex(currentIndex);
+    }
+
+    private void MoveArrowLeft()
+    {
+        currentIndex = (currentIndex - 1 + buildings.Count) % buildings.Count;
+        UpdateArrowPosition();
+        repeatTimer = repeatRate;
+        UpdateLastKnowBuildingIndex(currentIndex);
+    }
+
     public void SelectSpecificBuilding(int buildingIndex)
     {
         currentIndex = buildingIndex;
@@ -131,7 +211,7 @@ public class TownManager : SingletonMonoBehaviour<TownManager>
     {
         currentArrowInstance.SetActive(true);
     }
-    
+
     public void DisableArrowInstanceGameObject()
     {
         currentArrowInstance.SetActive(false);
@@ -150,5 +230,10 @@ public class TownManager : SingletonMonoBehaviour<TownManager>
     public bool ArrowInstanceExists()
     {
         return currentArrowInstance;
+    }
+
+    public void UpdateLastKnowBuildingIndex(int index)
+    {
+        GameManager.Instance.lastKnowBuildingIndex = index;
     }
 }
