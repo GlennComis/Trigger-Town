@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,6 +21,9 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 
     [SerializeField]
     private TextMeshProUGUI totalAmountLabel;
+    
+    [SerializeField]
+    private TextMeshProUGUI countdownLabel;
 
     [Header("Defeat screen")]
     [SerializeField]
@@ -49,6 +53,27 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 
         totalAmountLabel.text = totalScore.ToString();
     }
+    
+    public void ShowCountdownNumber(int number)
+    {
+        countdownLabel.text = number.ToString();
+        countdownLabel.gameObject.SetActive(true);
+        countdownLabel.transform.localScale = Vector3.one * 2f;
+
+        countdownLabel.DOKill();
+        countdownLabel.transform.DOScale(1f, 0.4f)
+            .SetEase(Ease.OutBack);
+
+        countdownLabel.DOFade(1f, 0.05f);
+    }
+    
+    
+
+    public void HideCountdown()
+    {
+        countdownLabel.gameObject.SetActive(false);
+    }
+
 
     public void SetDefeatScreen()
     {

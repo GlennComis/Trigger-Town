@@ -23,7 +23,12 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
 
     private void Awake()
     {
-        GameManager.Instance.Load();
+        if(GameManager.instance_exists)
+            GameManager.Instance.Load();
+        else
+        {
+            this.enabled = false;
+        }
     }
 
     private void Start()
@@ -144,6 +149,7 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
 
         yield return null; //Wait a single frame to prevent timing issue
         fastDrawManager.PauseAction();
+        UIManager.Instance.HideCountdown();
         yield return new WaitForSeconds(1f);
 
         DialogueManager.Instance.SetCurrentConversation(missedQTEConversation, true);
@@ -158,13 +164,13 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
     {
         fastDrawManager.StopDraw();
         fastDrawManager.PauseAction();
+        UIManager.Instance.HideCountdown();
         DialogueManager.Instance.SetCurrentConversation(earlyFireDialogueConversation, true);
     }
     
     private void HandleOnQTEReset()
     {
-        Debug.Log("Prevents the user from getting the banner again");
-        fastDrawManager.StopDraw();
+        
     }
 
     private IEnumerator FinishTutorial()

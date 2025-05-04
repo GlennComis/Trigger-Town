@@ -3,18 +3,17 @@ using UnityEngine;
 
 public class RewardSystemController : MonoBehaviour
 {
-    private const int BountyReward = 6;
     private const int FlawlessBonus = 3;
     private const int FastDrawBonus = 4;
 
     private List<Reward> rewards = new List<Reward>();
 
-    public void CalculateRewards(bool flawless, float reactionTime, int streak)
+    public void CalculateRewards(int enemyBounty, bool flawless, float reactionTime, int streak)
     {
         rewards.Clear(); // Reset previous rewards
 
         // Base Bounty (Always Given)
-        rewards.Add(new Reward(RewardType.Bounty, BountyReward));
+        rewards.Add(new Reward(RewardType.Bounty, enemyBounty));
 
         // Flawless Victory
         if (flawless) rewards.Add(new Reward(RewardType.Flawless, FlawlessBonus));

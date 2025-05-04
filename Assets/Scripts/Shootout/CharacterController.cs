@@ -1,117 +1,124 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
+using TMPro;
 using Random = UnityEngine.Random;
 
 public abstract class CharacterController : MonoBehaviour
 {
+    #region Animator
+
     [Header("Animator")]
-    [SerializeField]
-    private Animator animator;
+    [SerializeField] private Animator animator;
     private static readonly int ShootStringHash = Animator.StringToHash("Shoot");
 
-    [Header("Health")]
-    [SerializeField]
-    private int health;
-    [SerializeField]
-    private Transform healthContainer;
-    private List<GameObject> healthIndicators;
-    private int lastActiveHealthIndex;
+    #endregion
+
+    #region Health
+    private int maxHealth;
+
+    [Tooltip("Slider UI element representing health bar.")]
+    [SerializeField] private Slider healthSlider;
+
+    [Tooltip("How long the health bar animation lasts when damaged.")]
+    [SerializeField] private float healthBarAnimDuration = 0.5f;
+
+    private float currentHealth;
+
+    #endregion
+
+    #region Sound
 
     [Header("Sound")]
-    [SerializeField]
-    private AudioSource audioSource;
-    private const float GUN_SHOT_DELAY = .25f;
-    [SerializeField]
-    private List<AudioClip> gunshotClips;
+    [SerializeField] private AudioSource audioSource;
+
+    [Tooltip("Gunshot sound clips to randomly pick from.")]
+    [SerializeField] private List<AudioClip> gunshotClips;
+
+    private const float GUN_SHOT_DELAY = 0.25f;
     private Vector2 pitchRange = new Vector2(0.8f, 1.1f);
-    
+
+    #endregion
+
+    #region Visuals
+
     [Header("Sprite")]
-    [SerializeField]
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private TextMeshProUGUI nameLabel;
+
     private Material flashMaterial;
-    private Coroutine flashCoroutine;
+    private Coroutine hitRoutine;
     private static readonly int FlashAmountShaderProperty = Shader.PropertyToID("_FlashAmount");
     private readonly WaitForSeconds FLASH_INTERVAL = new WaitForSeconds(0.1f);
-    
 
-    private void Awake()
+    #endregion
+
+    #region Unity Lifecycle
+
+    protected virtual void Awake()
     {
         flashMaterial = spriteRenderer.material;
     }
 
-    private void Start()
+    protected virtual void Start()
     {
-        Instantiate();
+        InitHealthBar();
     }
-    
-    public void Instantiate()
-    {
-        healthIndicators = new List<GameObject>();
-    
-        for (int i = 0; i < health; i++)
-        {
-            GameObject indicator = GameObject.Instantiate(FastDrawManager.Instance.healthIndicatorPrefab, healthContainer);
-            healthIndicators.Add(indicator);
-        }
 
-        lastActiveHealthIndex = healthIndicators.Count - 1;
-    }
-    
-    public void Shoot()
-    {
-        if(animator != null)
-            animator.SetTrigger(ShootStringHash);
-        
-        PlayGunShotClip();
-    }
-    
-    private void PlayGunShotClip()
-    {
-        if (gunshotClips == null || gunshotClips.Count == 0 || audioSource == null)
-        {
-            Debug.LogWarning("AudioManager: No clips or AudioSource assigned!");
-            return;
-        }
-        
-        AudioClip randomClip = gunshotClips[Random.Range(0, gunshotClips.Count)];
-        audioSource.pitch = Random.Range(pitchRange.x, pitchRange.y);
+    #endregion
 
-        audioSource.clip = randomClip;
-        audioSource.PlayDelayed(GUN_SHOT_DELAY);
+    #region Health System
+
+    protected void SetupCharacter(int characterHealth, string name)
+    {
+        maxHealth = characterHealth;
+        nameLabel.text = name;
+    }
+
+    private void InitHealthBar()
+    {
+        currentHealth = maxHealth;
+
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = maxHealth;
+        }
     }
 
     public void TakeDamage()
     {
-        if (flashCoroutine != null)
-            StopCoroutine(flashCoroutine);
+        if (hitRoutine != null)
+            StopCoroutine(hitRoutine);
 
-        flashCoroutine = StartCoroutine(FlashEffect());
+        hitRoutine = StartCoroutine(HitRoutine());
         
-        health--;
+        currentHealth--;
+    }
 
-        if (health <= 0)
+    private IEnumerator HitRoutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        flashMaterial.SetFloat(FlashAmountShaderProperty, 1);
+        yield return FLASH_INTERVAL;
+        flashMaterial.SetFloat(FlashAmountShaderProperty, 0);
+        yield return FLASH_INTERVAL;
+        flashMaterial.SetFloat(FlashAmountShaderProperty, 1);
+        yield return FLASH_INTERVAL;
+        flashMaterial.SetFloat(FlashAmountShaderProperty, 0);
+
+        if (healthSlider != null)
+        {
+            healthSlider.DOValue(currentHealth, healthBarAnimDuration).SetEase(Ease.OutCubic);
+        }
+
+        yield return new WaitForSeconds(healthBarAnimDuration);
+        
+        if (currentHealth <= 0)
         {
             Die();
-        }
-    }
-    
-    private IEnumerator FlashEffect()
-    {
-        yield return new WaitForSeconds(.5f);
-        flashMaterial.SetFloat(FlashAmountShaderProperty, 1);
-        yield return FLASH_INTERVAL;
-        flashMaterial.SetFloat(FlashAmountShaderProperty, 0);
-        yield return FLASH_INTERVAL;
-        flashMaterial.SetFloat(FlashAmountShaderProperty, 1);
-        yield return FLASH_INTERVAL;
-        flashMaterial.SetFloat(FlashAmountShaderProperty, 0);
-        
-        if (lastActiveHealthIndex >= 0)
-        {
-            healthIndicators[lastActiveHealthIndex].SetActive(false);
-            lastActiveHealthIndex--;
         }
     }
 
@@ -119,4 +126,33 @@ public abstract class CharacterController : MonoBehaviour
     {
         Debug.Log("Character has died");
     }
+
+    #endregion
+
+    #region Combat
+
+    public void Shoot()
+    {
+        if (animator != null)
+            animator.SetTrigger(ShootStringHash);
+
+        PlayGunShotClip();
+    }
+
+    private void PlayGunShotClip()
+    {
+        if (gunshotClips == null || gunshotClips.Count == 0 || audioSource == null)
+        {
+            Debug.LogWarning("AudioManager: No clips or AudioSource assigned!");
+            return;
+        }
+
+        AudioClip randomClip = gunshotClips[Random.Range(0, gunshotClips.Count)];
+        audioSource.pitch = Random.Range(pitchRange.x, pitchRange.y);
+
+        audioSource.clip = randomClip;
+        audioSource.PlayDelayed(GUN_SHOT_DELAY);
+    }
+
+    #endregion
 }

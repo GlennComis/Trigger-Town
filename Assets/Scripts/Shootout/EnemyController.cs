@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class EnemyController : CharacterController
 {
@@ -25,6 +26,12 @@ public class EnemyController : CharacterController
         FastDrawManager.OnDrawSignal -= PrepareToShoot;
         FastDrawManager.OnDrawResult -= HandleResult;
         FastDrawManager.OnFiredEarly -= OnPlayerFiredEarly;
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        SetupCharacter(enemyData.maxHealth, enemyData.enemyName);
     }
 
     private void PrepareToShoot()
@@ -104,5 +111,10 @@ public class EnemyController : CharacterController
     public bool IsPassiveEnemy()
     {
         return enemyData.isPassive;
+    }
+
+    public int GetReward()
+    {
+        return enemyData.bountyReward;
     }
 }

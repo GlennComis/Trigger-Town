@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Cinemachine;
 
 public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 {
@@ -15,9 +16,32 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
     #region Serialized Fields
 
-    [Header("Draw Time")]
-    [SerializeField] private float minDrawTime = 5f;
-    [SerializeField] private float maxDrawTime = 10f;
+    [Header("Draw Countdown")]
+    [SerializeField] private float postCountdownMaxDelay = 2f;
+    [SerializeField] private float countdownStepDelay = 1.2f;
+    private WaitForSeconds timeBetweenRounds = new WaitForSeconds(3f);
+
+    [Header("Cinemachine Camera")]
+    [SerializeField] private CinemachineCamera cinemachineCamera;
+
+    [Header("Camera Tension Settings")]
+    [Tooltip("Maximum sway distance (camera side-to-side and up-down shake).")]
+    [SerializeField] private float swayAmplitude = 0.05f;
+
+    [Tooltip("How quickly the camera sways back and forth.")]
+    [SerializeField] private float swayFrequency = 1f;
+
+    [Tooltip("How much the camera's FOV zooms in and out during tension.")]
+    [SerializeField] private float microZoomAmplitude = 1f;
+
+    [Tooltip("Speed at which the FOV pulses (zoom in/out frequency).")]
+    [SerializeField] private float microZoomSpeed = 2f;
+
+    [Tooltip("How long it takes to ramp up the intensity of camera effects.")]
+    [SerializeField] private float intensityRampTime = 3f;
+
+    [Tooltip("Additional zoom during countdown to build tension.")]
+    [SerializeField] private float countdownZoomAmount = 2f;
 
     [Header("Controllers")]
     [SerializeField] private EnemyController currentEnemyController;
@@ -28,6 +52,11 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     [SerializeField] private QTEManager qteManager;
     [SerializeField] private QTEType currentQTEType = QTEType.Timing;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource sfxAudioSource;
+    [SerializeField] private AudioClip countdownBeepClip;
+    [SerializeField] private AudioClip drawClip;
+
     #endregion
 
     #region Private Fields
@@ -36,6 +65,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     private float enemyReactionTime = -1f;
 
     private Coroutine activeDrawSequenceRoutine;
+    private Coroutine cameraEffectRoutine;
 
     private bool canShoot = false;
     private bool hasResult = false;
@@ -47,16 +77,19 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     private bool flawlessGame = true;
     private float fastestDrawTime = -1f;
 
-    private TutorialControllerFastDraw tutorialControllerFastDraw;
+    private float originalFOV;
+    private Vector3 originalCameraPosition;
+
     private IQTE activeQTE;
+    private TutorialControllerFastDraw tutorialControllerFastDraw;
 
     #endregion
 
     #region Public Fields
-    
+
     public bool isActionPaused = false;
     public GameObject healthIndicatorPrefab;
-    
+
     #endregion
 
     #region Unity Lifecycle
@@ -65,6 +98,12 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     {
         base.Awake();
         tutorialControllerFastDraw = GetComponent<TutorialControllerFastDraw>();
+
+        if (cinemachineCamera != null)
+        {
+            originalFOV = cinemachineCamera.Lens.FieldOfView;
+            originalCameraPosition = cinemachineCamera.transform.position;
+        }
     }
 
     private void Start()
@@ -92,21 +131,140 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         hasResult = false;
 
         UIManager.Instance.SetDrawText(false);
+        ResetTimeScale();
+
+        if (cinemachineCamera != null)
+            StartCoroutine(ResetCameraSmoothly(0.5f));
     }
 
     private IEnumerator DrawSequence()
     {
         hasResult = false;
         canShoot = false;
+        drawStarted = true;
 
-        yield return new WaitForSeconds(Random.Range(minDrawTime, maxDrawTime));
+        float countdownDuration = countdownStepDelay * 3f;
+        float delay = Random.Range(0f, postCountdownMaxDelay);
+
+        if (cinemachineCamera != null)
+        {
+            if (cameraEffectRoutine != null)
+                StopCoroutine(cameraEffectRoutine);
+
+            originalCameraPosition = cinemachineCamera.transform.position;
+            cameraEffectRoutine = StartCoroutine(CameraMicroEffects(intensityRampTime));
+            StartCoroutine(ZoomInDuringCountdown(countdownDuration));
+        }
+
+        for (int count = 3; count >= 2; count--)
+        {
+            UIManager.Instance.ShowCountdownNumber(count);
+            PlayCountdownBeep();
+            yield return new WaitForSeconds(countdownStepDelay);
+        }
+
+        UIManager.Instance.ShowCountdownNumber(1);
+        PlayCountdownBeep();
+
+        Time.timeScale = 0.3f;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        yield return new WaitForSecondsRealtime(delay);
+        ResetTimeScale();
+
+        PlayDrawSound();
+        UIManager.Instance.SetDrawText(true);
+        UIManager.Instance.HideCountdown();
+
+        if (cameraEffectRoutine != null)
+        {
+            StopCoroutine(cameraEffectRoutine);
+            cameraEffectRoutine = null;
+            StartCoroutine(ResetCameraSmoothly(0.75f));
+        }
 
         drawStartTime = Time.time;
         drawStarted = false;
         canShoot = true;
 
-        UIManager.Instance.SetDrawText(true);
+        activeDrawSequenceRoutine = null;
         OnDrawSignal?.Invoke();
+    }
+
+    private IEnumerator CameraMicroEffects(float rampDuration)
+    {
+        float elapsedTime = 0f;
+        float rampTime = 0f;
+
+        Vector3 initialPosition = originalCameraPosition;
+        float initialFOV = originalFOV;
+
+        WaitForEndOfFrame wait = new WaitForEndOfFrame();
+
+        while (true)
+        {
+            float delta = Time.unscaledDeltaTime;
+            elapsedTime += delta;
+            rampTime = Mathf.Min(rampTime + delta, rampDuration);
+            float intensity = Mathf.Clamp01(rampTime / rampDuration);
+
+            float swayX = Mathf.Sin(elapsedTime * swayFrequency) * swayAmplitude * intensity;
+            float swayY = Mathf.Cos(elapsedTime * swayFrequency * 0.8f) * swayAmplitude * intensity;
+            float zoomOffset = Mathf.Sin(elapsedTime * microZoomSpeed) * microZoomAmplitude * intensity;
+
+            cinemachineCamera.transform.localPosition = initialPosition + new Vector3(swayX, swayY, 0f);
+            cinemachineCamera.Lens.FieldOfView = initialFOV + zoomOffset;
+
+            yield return wait;
+        }
+    }
+
+
+    private IEnumerator ZoomInDuringCountdown(float duration)
+    {
+        if (cinemachineCamera == null) yield break;
+
+        float startFOV = originalFOV;
+        float targetFOV = originalFOV - countdownZoomAmount;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(time / duration);
+            float easedT = Mathf.SmoothStep(0f, 1f, t);
+            cinemachineCamera.Lens.FieldOfView = Mathf.Lerp(startFOV, targetFOV, easedT);
+            yield return null;
+        }
+    }
+
+    private IEnumerator ResetCameraSmoothly(float duration = 0.75f)
+    {
+        if (cinemachineCamera == null) yield break;
+
+        Vector3 startPosition = cinemachineCamera.transform.position;
+        float startFOV = cinemachineCamera.Lens.FieldOfView;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float easedT = Mathf.SmoothStep(0f, 1f, t);
+
+            cinemachineCamera.transform.position = Vector3.Lerp(startPosition, originalCameraPosition, easedT);
+            cinemachineCamera.Lens.FieldOfView = Mathf.Lerp(startFOV, originalFOV, easedT);
+
+            yield return null;
+        }
+
+        cinemachineCamera.transform.position = originalCameraPosition;
+        cinemachineCamera.Lens.FieldOfView = originalFOV;
+    }
+
+    private void ResetTimeScale()
+    {
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = 0.02f;
     }
 
     #endregion
@@ -153,8 +311,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     private void HandleQTEResult(QTEResult result)
     {
         ResumeAction();
-        if (activeQTE != null)
-            activeQTE.OnQTEComplete -= HandleQTEResult;
+        activeQTE.OnQTEComplete -= HandleQTEResult;
 
         if (result == QTEResult.Good || result == QTEResult.Perfect)
         {
@@ -207,9 +364,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     private IEnumerator ResetRoutine()
     {
         StopActiveRoutine();
-
-        yield return new WaitForSeconds(1f);
-
+        yield return timeBetweenRounds;
         UIManager.Instance.SetDrawText(false);
         StartDraw();
         OnQTEReset?.Invoke();
@@ -219,9 +374,9 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     {
         UIManager.Instance.SetDrawText(false);
         fightEnded = true;
-
         StopActiveRoutine();
-        rewardSystemController.CalculateRewards(flawlessGame, fastestDrawTime, longestPlayerStreak);
+
+        rewardSystemController.CalculateRewards(currentEnemyController.GetReward(), flawlessGame, fastestDrawTime, longestPlayerStreak);
 
         if (playerWon)
         {
@@ -236,7 +391,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
     #endregion
 
-    #region Utility Methods
+    #region Utility
 
     private void StopActiveRoutine()
     {
@@ -245,17 +400,45 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
             StopCoroutine(activeDrawSequenceRoutine);
             activeDrawSequenceRoutine = null;
         }
+
+        if (cameraEffectRoutine != null)
+        {
+            StopCoroutine(cameraEffectRoutine);
+            cameraEffectRoutine = null;
+        }
+
+        if (cinemachineCamera != null)
+        {
+            StartCoroutine(ResetCameraSmoothly(0.5f));
+        }
+
+        ResetTimeScale();
     }
 
-    public void PauseAction() => isActionPaused = true;
+    private void PlayCountdownBeep()
+    {
+        if (sfxAudioSource != null && countdownBeepClip != null)
+            sfxAudioSource.PlayOneShot(countdownBeepClip);
+    }
+
+    private void PlayDrawSound()
+    {
+        if (sfxAudioSource != null && drawClip != null)
+            sfxAudioSource.PlayOneShot(drawClip);
+    }
+
+    public void PauseAction()
+    {
+        Debug.Log("Pause?");
+        isActionPaused = true;
+        UIManager.Instance.HideCountdown();
+    }
+
     public void ResumeAction() => isActionPaused = false;
 
     public void PlayerShootAnimation() => playerController.Shoot();
-
     public void SetEnemyReactionTime(float reactionTime) => enemyReactionTime = reactionTime;
-
     public void SetQTEType(QTEType qteType) => currentQTEType = qteType;
-
     public bool IsPassiveEnemy() => currentEnemyController.IsPassiveEnemy();
 
     #endregion

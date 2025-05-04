@@ -2,6 +2,13 @@ using UnityEngine;
 
 public class PlayerController : CharacterController
 {
+    private int playerHealth = 1;
+    protected override void Awake()
+    {
+        base.Awake();
+        SetupCharacter(playerHealth, string.Empty);
+    }
+
     private void OnEnable()
     {
         FastDrawManager.OnDrawResult += ProcessResult;
