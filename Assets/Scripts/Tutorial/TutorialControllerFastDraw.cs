@@ -115,6 +115,11 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
         {
             fastDrawManager.SubscribeResultHandle();
         }
+        else if (DialogueManager.Instance.GetCurrentConversation == completedQTE)
+        {
+            isInTutorial = false;
+            UIManager.Instance.SetWinScreen(fastDrawManager.RewardSystemController.GetRewards());
+        }
     }
 
     private void HandleQTEStart()
@@ -175,7 +180,6 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
 
     private IEnumerator FinishTutorial()
     {
-        isInTutorial = false;
         timingQTE.OnQTEComplete -= HandleQTEResult;
 
         yield return new WaitForSeconds(0.5f);

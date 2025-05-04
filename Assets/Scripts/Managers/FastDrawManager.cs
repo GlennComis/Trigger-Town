@@ -47,6 +47,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     [SerializeField] private EnemyController currentEnemyController;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private RewardSystemController rewardSystemController;
+    public RewardSystemController RewardSystemController => rewardSystemController;
 
     [Header("Quick Time Events")]
     [SerializeField] private QTEManager qteManager;
@@ -358,7 +359,9 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         }
 
         OnDrawResult?.Invoke(isPlayer);
-        StartCoroutine(ResetRoutine());
+        
+        if(!tutorialControllerFastDraw.isInTutorial)
+            StartCoroutine(ResetRoutine());
     }
 
     private IEnumerator ResetRoutine()
@@ -381,7 +384,9 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         if (playerWon)
         {
             PauseAction();
-            UIManager.Instance.SetWinScreen(rewardSystemController.GetRewards());
+            
+            if(!tutorialControllerFastDraw.isInTutorial)
+                UIManager.Instance.SetWinScreen(rewardSystemController.GetRewards());
         }
         else
         {
