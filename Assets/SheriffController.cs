@@ -1,12 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using UnityEngine.SceneManagement;
 
 public class SheriffController : MonoBehaviour
 {
     [Header("References")]
-    public Image loadingScreenImage; // The UI image for the loading screen
     public SpriteRenderer counterSprite;
     public SpriteRenderer sheriffSprite;
 
@@ -17,12 +15,12 @@ public class SheriffController : MonoBehaviour
     public Vector3 counterOffscreenOffset = new Vector3(0f, -5f, 0f);
 
     [Header("Button UI")]
-    public RectTransform actionButton; // The button to animate
+    public RectTransform actionButton;
     public float buttonSlideDistance = 300f;
     public float buttonSlideDuration = 0.75f;
 
     [Header("Conversation")]
-    [SerializeField]private ConversationScriptableObject headOutConversation;
+    [SerializeField] private ConversationScriptableObject headOutConversation;
 
     private Vector3 counterTargetPosition;
     private Vector2 buttonTargetPosition;
@@ -30,7 +28,6 @@ public class SheriffController : MonoBehaviour
 
     private void Start()
     {
-        // Save final positions
         counterTargetPosition = counterSprite.transform.position;
 
         if (actionButton != null)
@@ -39,15 +36,13 @@ public class SheriffController : MonoBehaviour
             actionButton.anchoredPosition = buttonTargetPosition - new Vector2(0, buttonSlideDistance);
         }
 
-        // Setup visuals
         counterSprite.transform.position = counterTargetPosition + counterOffscreenOffset;
         counterSprite.color = SetAlpha(counterSprite.color, 0f);
         sheriffSprite.color = SetAlpha(sheriffSprite.color, 0f);
-        loadingScreenImage.color = SetAlpha(loadingScreenImage.color, 1f);
 
         RunSequence();
     }
-    
+
     private void OnEnable()
     {
         DialogueManager.OnEndConversation += HandleEndConversation;
@@ -60,17 +55,17 @@ public class SheriffController : MonoBehaviour
 
     private void HandleEndConversation()
     {
-        Debug.LogWarning("Ending current conversation: " + DialogueManager.Instance.GetCurrentConversation);
         if (DialogueManager.Instance.GetCurrentConversation == headOutConversation)
-            LoadSceneWithFade(1);
+        {
+            LoadScene(1);
+        }
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Backspace) && !isReturning)
         {
-            isReturning = true;
-            FadeAndLoadScene(0);
+            LoadScene(0);
         }
     }
 
@@ -78,62 +73,24 @@ public class SheriffController : MonoBehaviour
     {
         Sequence sequence = DOTween.Sequence();
 
-        // Fade out loading screen
-        sequence.Append(loadingScreenImage.DOFade(0f, fadeDuration));
-
-        // Slide and fade in counter
         sequence.Append(counterSprite.transform.DOMove(counterTargetPosition, slideDuration).SetEase(Ease.OutQuad));
         sequence.Join(counterSprite.DOFade(1f, slideDuration));
 
-        // Fade in sheriff
         sequence.AppendInterval(sheriffFadeDelay);
         sequence.Append(sheriffSprite.DOFade(1f, fadeDuration));
-        
     }
 
-    private void LoadSceneWithFade(int index)
+    private void LoadScene(int sceneIndex)
     {
         if (isReturning) return;
         isReturning = true;
-        
-        Sequence sequence = DOTween.Sequence();
-
-        // Ensure image is visible and alpha 0
-        Color color = loadingScreenImage.color;
-        loadingScreenImage.gameObject.SetActive(true);
-        loadingScreenImage.color = SetAlpha(color, 0f);
-        loadingScreenImage.enabled = true;
-
-        // Fade in to black
-        sequence.Append(loadingScreenImage.DOFade(1f, fadeDuration));
-
-        // Load scene after fade
-        sequence.AppendCallback(() =>
-        {
-            SceneManager.LoadScene(index);
-        });
+        GameManager.Instance.LoadScene(sceneIndex, fadeDuration, FadeType.Simple);
     }
-
 
     public void OnWantedPosterButton()
     {
         DialogueManager.Instance.SetCurrentConversation(headOutConversation, true);
         SlideOutWantedPoster();
-    }
-
-    private void FadeAndLoadScene(int index)
-    {
-        loadingScreenImage.color = SetAlpha(loadingScreenImage.color, 0f);
-        loadingScreenImage.DOFade(1f, fadeDuration).OnComplete(() =>
-        {
-            SceneManager.LoadScene(index);
-        });
-    }
-
-    private Color SetAlpha(Color color, float alpha)
-    {
-        color.a = alpha;
-        return color;
     }
 
     public void SlideInWantedPoster()
@@ -156,5 +113,11 @@ public class SheriffController : MonoBehaviour
                 buttonSlideDuration
             ).SetEase(Ease.InBack);
         }
+    }
+
+    private Color SetAlpha(Color color, float alpha)
+    {
+        color.a = alpha;
+        return color;
     }
 }

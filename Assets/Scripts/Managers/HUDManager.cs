@@ -83,6 +83,7 @@ public class HUDManager : SingletonMonoBehaviour<HUDManager>
 
     public void LoadTown()
     {
-        SceneManager.LoadScene(0);
+        GameManager.Instance.LoadScene(0, 1f, FadeType.Simple);
+
     }
 }

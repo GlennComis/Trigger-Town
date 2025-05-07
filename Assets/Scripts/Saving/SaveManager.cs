@@ -13,7 +13,10 @@ public class SaveManager : MonoBehaviour
     {
         saveData.Clear();
 
-        ISaveable[] saveables = FindObjectsOfType<MonoBehaviour>(true).OfType<ISaveable>().ToArray();
+        ISaveable[] saveables = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+            .OfType<ISaveable>()
+            .ToArray();
+
         foreach (var s in saveables)
         {
             object captured = s.CaptureData();
@@ -24,6 +27,7 @@ public class SaveManager : MonoBehaviour
         File.WriteAllText(SavePath, json);
         Debug.Log("Game saved to: " + SavePath);
     }
+
 
     public void Load()
     {

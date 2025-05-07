@@ -1,7 +1,5 @@
 ﻿using DG.Tweening;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class Building : MonoBehaviour, IEnterable
 {
@@ -11,10 +9,6 @@ public class Building : MonoBehaviour, IEnterable
 
     [Header("Closed Dialogue")]
     public ConversationScriptableObject closedConversation;
-
-    [Header("Fade Overlay")]
-    public Image fadeImage;
-    public float fadeDuration = 1f;
 
     [Header("Door Animation (optional)")]
     public Animator doorAnimator;
@@ -66,11 +60,7 @@ public class Building : MonoBehaviour, IEnterable
                 doorAnimator.SetTrigger(doorOpenTrigger);
         }
 
-        fadeImage.raycastTarget = true;
-        fadeImage.DOFade(1f, fadeDuration).OnComplete(() =>
-        {
-            SceneManager.LoadScene(sceneBuildIndex);
-        });
+        GameManager.Instance.LoadScene(sceneBuildIndex, 1f, FadeType.Simple);
     }
 
     private void HandleEndConversation()

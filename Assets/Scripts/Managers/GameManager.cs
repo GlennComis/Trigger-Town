@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -39,5 +41,45 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public void CompleteTownTutorial()
     {
         hasCompletedTownTutorial = true;
+    }
+    
+    public void LoadScene(int sceneIndex, float minTransitionDelay = 2f, FadeType fadeType = FadeType.Simple)
+    {
+        if (UIManager.Instance == null || UIManager.Instance.fadeTransitionController == null)
+        {
+            Debug.LogError("FadeTransitionController not set up!");
+            return;
+        }
+
+        StartCoroutine(TransitionSequence(sceneIndex, minTransitionDelay, fadeType));
+    }
+
+    private IEnumerator TransitionSequence(int sceneIndex, float minTransitionDelay, FadeType fadeType)
+    {
+        bool fadeOutDone = false;
+        UIManager.Instance.fadeTransitionController.FadeOut(fadeType, () => fadeOutDone = true);
+
+        yield return new WaitUntil(() => fadeOutDone);
+
+        AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneIndex);
+        loadOp.allowSceneActivation = false;
+
+        float timeElapsed = 0f;
+        while (!loadOp.isDone)
+        {
+            timeElapsed += Time.deltaTime;
+
+            if (loadOp.progress >= 0.9f && timeElapsed >= minTransitionDelay)
+            {
+                loadOp.allowSceneActivation = true;
+            }
+
+            yield return null;
+        }
+
+        bool fadeInDone = false;
+        UIManager.Instance.fadeTransitionController.FadeIn(fadeType, () => fadeInDone = true);
+
+        yield return new WaitUntil(() => fadeInDone);
     }
 }
