@@ -125,7 +125,7 @@ ScriptedImporter:
   animatedSpriteImportData:
   - name: Sheriff
     originalName: 
-    pivot: {x: 0.50301206, y: 0}
+    pivot: {x: 0.5, y: 0}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -133,7 +133,7 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 166
+      width: 167
       height: 164
     spriteID: 3f85877fa3a862d4892173ab986e8f4b
     spriteBone: []
@@ -159,7 +159,7 @@ ScriptedImporter:
       cellRect:
         x: 0
         y: 0
-        width: 166
+        width: 167
         height: 164
       spriteId: 3f85877fa3a862d4892173ab986e8f4b
     linkedCells: []

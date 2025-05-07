@@ -50,6 +50,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             Debug.LogError("FadeTransitionController not set up!");
             return;
         }
+        
+        //todo: temp code, remove later
+        if (sceneIndex != 0)
+        {
+            UIManager.Instance.newsController.gameObject.SetActive(false);
+            UIManager.Instance.glyphs.SetActive(false);
+        }
 
         StartCoroutine(TransitionSequence(sceneIndex, minTransitionDelay, fadeType));
     }
@@ -79,6 +86,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
         bool fadeInDone = false;
         UIManager.Instance.fadeTransitionController.FadeIn(fadeType, () => fadeInDone = true);
+        
+        //todo: temp code, remove later
+        if (sceneIndex == 0)
+        {
+            UIManager.Instance.glyphs.SetActive(true);
+            UIManager.Instance.newsController.ShowNextHeadline();
+            UIManager.Instance.newsController.gameObject.SetActive(true);
+        }
 
         yield return new WaitUntil(() => fadeInDone);
     }

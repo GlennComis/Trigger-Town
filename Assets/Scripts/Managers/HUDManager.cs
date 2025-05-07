@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class HUDManager : SingletonMonoBehaviour<HUDManager>
 {

@@ -63,6 +63,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     private IQTE activeQTE;
     private TutorialControllerFastDraw tutorialControllerFastDraw;
     private CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin;
+    private Tween fovTween;
 
     private readonly WaitForSeconds timeBetweenRounds = new WaitForSeconds(3f);
 
@@ -88,8 +89,6 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
     private void Start()
     {
-        StartDraw();
-
         if (tutorialControllerFastDraw.IsInTutorial())
             StartDraw();
     }
@@ -369,14 +368,15 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     {
         if (cinemachineCamera != null)
         {
-            DOTween.To(() => cinemachineCamera.Lens.FieldOfView,
+            fovTween = DOTween.To(() => cinemachineCamera.Lens.FieldOfView,
                        fov => cinemachineCamera.Lens.FieldOfView = fov,
                        targetFOV, duration).SetEase(Ease.InOutSine);
         }
     }
 
-    private void ResetCameraFOV()
+    public void ResetCameraFOV()
     {
+        fovTween.Kill();
         if (cinemachineCamera != null)
         {
             cinemachineCamera.Lens.FieldOfView = originalFOV;

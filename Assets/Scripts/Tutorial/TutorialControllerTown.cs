@@ -109,6 +109,10 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
         GameManager.Instance.Save();
         GameManager.Instance.CompleteTownTutorial();
         Debug.Log("Town Tutorial completed");
+        
+        //todo: remove later temp code
+        UIManager.Instance.glyphs.SetActive(true);
+        UIManager.Instance.newsController.gameObject.SetActive(true);
     }
     
     // Track dialogue state to focus on buildings while being in a certain dialogue window

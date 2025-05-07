@@ -271,6 +271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   newsController: {fileID: 2313504820721002568}
   fadeTransitionController: {fileID: 353146838179966518}
+  glyphs: {fileID: 8613206136710418001}
 --- !u!1001 &125227363157644383
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -959,5 +960,10 @@ PrefabInstance:
 --- !u!224 &7223940022477841374 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3605240098859471994, guid: c37c8b3ce4bd29f4a9870b66b117deb4, type: 3}
+  m_PrefabInstance: {fileID: 6217489669211797412}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8613206136710418001 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2432142471683209717, guid: c37c8b3ce4bd29f4a9870b66b117deb4, type: 3}
   m_PrefabInstance: {fileID: 6217489669211797412}
   m_PrefabAsset: {fileID: 0}

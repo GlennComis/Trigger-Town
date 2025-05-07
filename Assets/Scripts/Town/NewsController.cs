@@ -46,7 +46,7 @@ public class NewsController : MonoBehaviour
     }
     
 
-    private void ShowNextHeadline()
+    public void ShowNextHeadline()
     {
         currentIndex = (currentIndex + 1) % headlines.Count;
         newsLabel.text = headlines[currentIndex];
