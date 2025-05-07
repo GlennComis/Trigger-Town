@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
@@ -23,12 +22,10 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
 
     private void Awake()
     {
-        if(GameManager.instance_exists)
+        if (GameManager.instance_exists)
             GameManager.Instance.Load();
         else
-        {
             this.enabled = false;
-        }
     }
 
     private void Start()
@@ -41,10 +38,8 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
     {
         FastDrawManager.OnFiredEarly += HandleOnFiredEarly;
         FastDrawManager.OnQTEReset += HandleOnQTEReset;
-        
         DialogueManager.OnDialogueShown += HandleDialogueTrigger;
         DialogueManager.OnEndConversation += HandleEndConversation;
-        
         timingQTE.OnQTEStarted += HandleQTEStart;
         timingQTE.OnQTEComplete += HandleQTEResult;
     }
@@ -55,11 +50,9 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
         FastDrawManager.OnQTEReset -= HandleOnQTEReset;
         DialogueManager.OnDialogueShown -= HandleDialogueTrigger;
         DialogueManager.OnEndConversation -= HandleEndConversation;
-        
         timingQTE.OnQTEStarted -= HandleQTEStart;
         timingQTE.OnQTEComplete -= HandleQTEResult;
     }
-
 
     public object CaptureData() => new TutorialFastDrawData { hasCompleted = hasCompleted };
 
@@ -82,43 +75,41 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
         if (!fastDrawTutorialConversation.dialogueScriptableObjects.Contains(dialogue)) return;
         if (dialogue != fastDrawTutorialConversation.dialogueScriptableObjects[currentStep]) return;
 
-        switch (currentStep)
-        {
-           
-        }
-
         currentStep++;
     }
 
     private void HandleEndConversation()
     {
-        if (DialogueManager.Instance.GetCurrentConversation == fastDrawTutorialConversation)
+        var current = DialogueManager.Instance.GetCurrentConversation;
+
+        if (current == fastDrawTutorialConversation)
         {
-           switch (currentStep)
-                   {
-                       case 6:
-                           fastDrawManager.ResumeAction();
-                           fastDrawManager.StartDraw();
-                           break;
-                   } 
+            if (currentStep == 6)
+            {
+                fastDrawManager.ResumeAction();
+                fastDrawManager.StartDraw();
+            }
         }
-        else if (DialogueManager.Instance.GetCurrentConversation == earlyFireDialogueConversation)
+        else if (current == earlyFireDialogueConversation)
         {
             fastDrawManager.ResumeAction();
             fastDrawManager.StartDraw();
         }
-        else if (DialogueManager.Instance.GetCurrentConversation == qteDialogueConversation)
+        else if (current == qteDialogueConversation)
         {
             timingQTE.ResumeQTE();
         }
-        else if (DialogueManager.Instance.GetCurrentConversation == missedQTEConversation)
+        else if (current == missedQTEConversation)
         {
+            fastDrawManager.ResetRoundStateForRetry();
             fastDrawManager.SubscribeResultHandle();
+            timingQTE.PlayQTEIntro();
         }
-        else if (DialogueManager.Instance.GetCurrentConversation == completedQTE)
+        else if (current == completedQTE && !hasCompleted)
         {
+            hasCompleted = true;
             isInTutorial = false;
-            HUDManager.Instance.SetWinScreen(fastDrawManager.RewardSystemController.GetRewards());
+            fastDrawManager.RoundEnd(true);
         }
     }
 
@@ -129,7 +120,6 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
         fastDrawManager.PauseAction();
         timingQTE.PauseQTE();
 
-        // Show QTE explanation dialogue
         DialogueManager.Instance.SetCurrentConversation(qteDialogueConversation, true);
     }
 
@@ -150,21 +140,21 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
 
     private IEnumerator HandleQTERetry()
     {
-        timingQTE.OnQTEComplete -= HandleQTEResult;
-
-        yield return null; //Wait a single frame to prevent timing issue
+        yield return null; // Wait a single frame
         fastDrawManager.PauseAction();
         HUDManager.Instance.HideCountdown();
         yield return new WaitForSeconds(1f);
 
         DialogueManager.Instance.SetCurrentConversation(missedQTEConversation, true);
-        
-        yield return new WaitUntil(() => !DialogueManager.Instance.IsInConversation);
-
-        timingQTE.OnQTEComplete += HandleQTEResult;
-        timingQTE.PlayQTEIntro();
     }
-    
+
+    private IEnumerator FinishTutorial()
+    {
+        yield return new WaitForSeconds(0.5f);
+        fastDrawManager.PauseAction();
+        DialogueManager.Instance.SetCurrentConversation(completedQTE, true);
+    }
+
     private void HandleOnFiredEarly()
     {
         fastDrawManager.StopDraw();
@@ -172,26 +162,11 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
         HUDManager.Instance.HideCountdown();
         DialogueManager.Instance.SetCurrentConversation(earlyFireDialogueConversation, true);
     }
-    
+
     private void HandleOnQTEReset()
     {
         
     }
 
-    private IEnumerator FinishTutorial()
-    {
-        timingQTE.OnQTEComplete -= HandleQTEResult;
-
-        yield return new WaitForSeconds(0.5f);
-        DialogueManager.Instance.SetCurrentConversation(completedQTE, true);
-        yield return new WaitUntil(() => !DialogueManager.Instance.IsInConversation);
-
-        hasCompleted = true;
-        fastDrawManager.ResumeAction();
-    }
-
-    public bool IsInTutorial()
-    {
-        return isInTutorial;
-    }
+    public bool IsInTutorial() => isInTutorial;
 }

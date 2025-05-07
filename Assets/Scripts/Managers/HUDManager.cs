@@ -41,7 +41,6 @@ public class HUDManager : SingletonMonoBehaviour<HUDManager>
 
     public void SetWinScreen(List<Reward> rewards)
     {
-        Debug.LogError("Setting win screen");
         winnerContainer.SetActive(true);
         var totalScore = 0;
         foreach (var reward in rewards)

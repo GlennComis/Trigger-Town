@@ -167,15 +167,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff5a63dcb4923924995b7a4e44c0b500, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  postCountdownMaxDelay: 2
+  countdownStartNumber: 3
   countdownStepDelay: 1.2
-  cinemachineCamera: {fileID: 1149616542}
-  swayAmplitude: 0.1
+  postCountdownMinDelay: 1
+  postCountdownMaxDelay: 2
+  cinemachineCamera: {fileID: 1149616543}
+  countdownZoomAmount: 10
+  swayAmplitude: 0.2
   swayFrequency: 1
-  microZoomAmplitude: 1
-  microZoomSpeed: 2
-  intensityRampTime: 2
-  countdownZoomAmount: 2
   currentEnemyController: {fileID: 556561060}
   playerController: {fileID: 470869714}
   rewardSystemController: {fileID: 21813546}
@@ -185,7 +184,6 @@ MonoBehaviour:
   countdownBeepClip: {fileID: 8300000, guid: 3c88825b92476e44ea35065662497cc4, type: 3}
   drawClip: {fileID: 8300000, guid: f3ea52eb67f90424ab2fafa466e7d5a0, type: 3}
   isActionPaused: 0
-  healthIndicatorPrefab: {fileID: 6009811994733519526, guid: 8c21d7fd0248a10458ec2f5a28a2c4d6, type: 3}
 --- !u!114 &21813546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2125,11 +2123,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
+  near clip plane: 0.1
+  far clip plane: 5000
   field of view: 60
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2154,7 +2152,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5.1}
+  m_LocalPosition: {x: 0, y: 0, z: -5.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3489,6 +3487,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1149616541}
+  - component: {fileID: 1149616543}
   - component: {fileID: 1149616542}
   m_Layer: 0
   m_Name: CinemachineCamera
@@ -3506,13 +3505,30 @@ Transform:
   m_GameObject: {fileID: 1149616540}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5.1}
+  m_LocalPosition: {x: 0, y: 0, z: -5.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1149616542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149616540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+  PivotOffset: {x: 0, y: 0, z: 0}
+  AmplitudeGain: 0
+  FrequencyGain: 0.5
+  m_NoiseOffsets: {x: 0, y: 0, z: 0}
+--- !u!114 &1149616543
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3537,9 +3553,9 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 60
-    OrthographicSize: 5
-    NearClipPlane: 0.3
-    FarClipPlane: 1000
+    OrthographicSize: 10
+    NearClipPlane: 0.1
+    FarClipPlane: 5000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -4305,7 +4321,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 371.3}
+  m_AnchoredPosition: {x: 0, y: 177.2}
   m_SizeDelta: {x: 1187.9906, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1459913835
@@ -4328,7 +4344,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Basic Revolver
+  m_text: Revolver
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a218e013f7445b54c8e323866ce2aaf6, type: 2}
   m_sharedMaterial: {fileID: -6970919630414690912, guid: a218e013f7445b54c8e323866ce2aaf6, type: 2}
