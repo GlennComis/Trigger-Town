@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UIManager : SingletonMonoBehaviour<UIManager>
+public class HUDManager : SingletonMonoBehaviour<HUDManager>
 {
     [Header("HUD")]
     [SerializeField]
@@ -41,6 +41,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 
     public void SetWinScreen(List<Reward> rewards)
     {
+        Debug.LogError("Setting win screen");
         winnerContainer.SetActive(true);
         var totalScore = 0;
         foreach (var reward in rewards)

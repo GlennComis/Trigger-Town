@@ -131,7 +131,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         canShoot = false;
         hasResult = false;
 
-        UIManager.Instance.SetDrawText(false);
+        HUDManager.Instance.SetDrawText(false);
         ResetTimeScale();
 
         if (cinemachineCamera != null)
@@ -159,12 +159,12 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
         for (int count = 3; count >= 2; count--)
         {
-            UIManager.Instance.ShowCountdownNumber(count);
+            HUDManager.Instance.ShowCountdownNumber(count);
             PlayCountdownBeep();
             yield return new WaitForSeconds(countdownStepDelay);
         }
 
-        UIManager.Instance.ShowCountdownNumber(1);
+        HUDManager.Instance.ShowCountdownNumber(1);
         PlayCountdownBeep();
 
         Time.timeScale = 0.3f;
@@ -173,8 +173,8 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         ResetTimeScale();
 
         PlayDrawSound();
-        UIManager.Instance.SetDrawText(true);
-        UIManager.Instance.HideCountdown();
+        HUDManager.Instance.SetDrawText(true);
+        HUDManager.Instance.HideCountdown();
 
         if (cameraEffectRoutine != null)
         {
@@ -368,14 +368,14 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     {
         StopActiveRoutine();
         yield return timeBetweenRounds;
-        UIManager.Instance.SetDrawText(false);
+        HUDManager.Instance.SetDrawText(false);
         StartDraw();
         OnQTEReset?.Invoke();
     }
 
     public void RoundEnd(bool playerWon)
     {
-        UIManager.Instance.SetDrawText(false);
+        HUDManager.Instance.SetDrawText(false);
         fightEnded = true;
         StopActiveRoutine();
 
@@ -386,11 +386,11 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
             PauseAction();
             
             if(!tutorialControllerFastDraw.isInTutorial)
-                UIManager.Instance.SetWinScreen(rewardSystemController.GetRewards());
+                HUDManager.Instance.SetWinScreen(rewardSystemController.GetRewards());
         }
         else
         {
-            UIManager.Instance.SetDefeatScreen();
+            HUDManager.Instance.SetDefeatScreen();
         }
     }
 
@@ -436,7 +436,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
     {
         Debug.Log("Pause?");
         isActionPaused = true;
-        UIManager.Instance.HideCountdown();
+        HUDManager.Instance.HideCountdown();
     }
 
     public void ResumeAction() => isActionPaused = false;

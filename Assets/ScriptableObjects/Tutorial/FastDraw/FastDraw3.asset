@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcName: Sheriff
   sprite: {fileID: 0}
-  dialogue: "Every time you get hit, you lose one. Lose \u2018em all, and you\u2019re
+  dialogue: "Every time you get hit, you lose health. Lose everything, and you\u2019re
     out cold."
   audioClip: {fileID: 0}
   preventPlayerInteraction: 1

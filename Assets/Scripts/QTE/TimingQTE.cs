@@ -102,7 +102,7 @@ public class TimingQTE : MonoBehaviour, IQTE
 
     public void PlayQTEIntro()
     {
-        UIManager.Instance.SetDrawText(false);
+        HUDManager.Instance.SetDrawText(false);
         StartCoroutine(QTEIntroRoutine());
     }
 

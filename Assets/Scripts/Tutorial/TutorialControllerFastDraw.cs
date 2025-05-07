@@ -118,7 +118,7 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
         else if (DialogueManager.Instance.GetCurrentConversation == completedQTE)
         {
             isInTutorial = false;
-            UIManager.Instance.SetWinScreen(fastDrawManager.RewardSystemController.GetRewards());
+            HUDManager.Instance.SetWinScreen(fastDrawManager.RewardSystemController.GetRewards());
         }
     }
 
@@ -154,7 +154,7 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
 
         yield return null; //Wait a single frame to prevent timing issue
         fastDrawManager.PauseAction();
-        UIManager.Instance.HideCountdown();
+        HUDManager.Instance.HideCountdown();
         yield return new WaitForSeconds(1f);
 
         DialogueManager.Instance.SetCurrentConversation(missedQTEConversation, true);
@@ -169,7 +169,7 @@ public class TutorialControllerFastDraw : MonoBehaviour, ISaveable
     {
         fastDrawManager.StopDraw();
         fastDrawManager.PauseAction();
-        UIManager.Instance.HideCountdown();
+        HUDManager.Instance.HideCountdown();
         DialogueManager.Instance.SetCurrentConversation(earlyFireDialogueConversation, true);
     }
     

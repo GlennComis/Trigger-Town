@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcName: Sheriff
   sprite: {fileID: 0}
-  dialogue: Same for them. Take all their hearts, and claim your reward!
+  dialogue: Same for them. Drop their health, and claim your reward!
   audioClip: {fileID: 0}
   preventPlayerInteraction: 1

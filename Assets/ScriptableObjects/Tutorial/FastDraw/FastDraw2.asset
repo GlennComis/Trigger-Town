@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcName: Sheriff
   sprite: {fileID: 0}
-  dialogue: "See those hearts? That\u2019s your life."
+  dialogue: "See the bar above your head? That\u2019s your life."
   audioClip: {fileID: 0}
   preventPlayerInteraction: 1
