@@ -16,5 +16,5 @@ MonoBehaviour:
   sprite: {fileID: 0}
   dialogue: "Grab a bounty, ride out, and settle things with lead. Win, and you\u2019ll
     ride back richer."
-  audioClip: {fileID: 0}
+  audioBlip: {fileID: 8300000, guid: a7462ee7eec16c941bc4332c37751bd9, type: 3}
   preventPlayerInteraction: 0

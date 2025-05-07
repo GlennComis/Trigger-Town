@@ -16,5 +16,5 @@ MonoBehaviour:
   sprite: {fileID: 0}
   dialogue: "Don\u2019t worry\u2014it\u2019ll stay right where I left it. Go on,
     take the poster."
-  audioClip: {fileID: 0}
+  audioBlip: {fileID: 8300000, guid: f80480274342c38468cdc9f36c6db437, type: 3}
   preventPlayerInteraction: 1

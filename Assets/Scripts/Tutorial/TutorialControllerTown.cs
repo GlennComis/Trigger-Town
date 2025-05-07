@@ -15,9 +15,6 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
     private bool hasCompleted;
     private int currentStep;
 
-    [SerializeField]
-    private GameObject newsBar;
-
     private void Start()
     {
         hasCompleted = GameManager.Instance.hasCompletedTownTutorial;
@@ -26,7 +23,6 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
             StartTutorial();
         else
         {
-            newsBar.SetActive(true);
             EnableArrow();
         }
         
@@ -111,7 +107,6 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
         TownManager.Instance.EnableBuildingSelection();
         TownManager.Instance.EnableArrowInstanceGameObject(); 
         GameManager.Instance.Save();
-        newsBar.SetActive(true);
         GameManager.Instance.CompleteTownTutorial();
         Debug.Log("Town Tutorial completed");
     }

@@ -16,5 +16,5 @@ MonoBehaviour:
   sprite: {fileID: 0}
   dialogue: Spend your hard-earned cash on better weapons and other tools to survive
     the next duel.
-  audioClip: {fileID: 0}
+  audioBlip: {fileID: 8300000, guid: a7462ee7eec16c941bc4332c37751bd9, type: 3}
   preventPlayerInteraction: 0

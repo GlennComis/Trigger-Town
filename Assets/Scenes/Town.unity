@@ -934,11 +934,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1437110597 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4115445366887212301, guid: de303adc508ea3441a7916ec1a392aec, type: 3}
-  m_PrefabInstance: {fileID: 2832563190912138736}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1439519666
 GameObject:
   m_ObjectHideFlags: 0
@@ -1123,7 +1118,6 @@ MonoBehaviour:
   - {fileID: 822250981}
   tutorialOverlayController: {fileID: 141935585}
   townIntroductionSheriff: {fileID: 11400000, guid: bdc9805a0fd785b42833f4de71af46f1, type: 2}
-  newsBar: {fileID: 1437110597}
 --- !u!1001 &1914014553
 PrefabInstance:
   m_ObjectHideFlags: 0

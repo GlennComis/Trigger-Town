@@ -15,5 +15,5 @@ MonoBehaviour:
   npcName: Sheriff Marston
   sprite: {fileID: 0}
   dialogue: I've picked out a real nasty one for your first job.
-  audioClip: {fileID: 0}
+  audioBlip: {fileID: 8300000, guid: f80480274342c38468cdc9f36c6db437, type: 3}
   preventPlayerInteraction: 1

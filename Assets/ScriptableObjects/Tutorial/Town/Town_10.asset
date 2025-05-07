@@ -16,5 +16,5 @@ MonoBehaviour:
   sprite: {fileID: 0}
   dialogue: "And remember... in Trigger Town, it\u2019s not about who draws first\u2014
     It\u2019s about who\u2019s left standing."
-  audioClip: {fileID: 0}
+  audioBlip: {fileID: 8300000, guid: a7462ee7eec16c941bc4332c37751bd9, type: 3}
   preventPlayerInteraction: 0

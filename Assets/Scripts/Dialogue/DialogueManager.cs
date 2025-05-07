@@ -12,32 +12,32 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
     [SerializeField] private RectTransform dialogueRectTransform;
     [SerializeField] private TextMeshProUGUI npcNameLabel;
     [SerializeField] private TextMeshProUGUI dialogueTextLabel;
-    
     [SerializeField] private TextAnimator_TMP textAnimator;
-    
+
     [Header("Audio")]
-    [SerializeField] private AudioSource npcAudioSource;
     [SerializeField] private AudioSource textAudioSource;
     [SerializeField] private AudioClip textBlipClip;
-    [SerializeField] private int blipFrequency = 3; // Play sound every N letters
+    [SerializeField] private int blipFrequency = 3;
     private float pitchVariation = 0.03f;
+    private AudioClip currentBlipClip;
 
     private ConversationScriptableObject currentConversation;
     public ConversationScriptableObject GetCurrentConversation => currentConversation;
     private int currentDialogueIndex;
 
     public static event Action<DialogueScriptableObject> OnDialogueShown;
+    public static event Action OnEndConversation;
 
     [Header("Dialogue Animation")]
     private const float RectTransformEndPositionY = 150f;
     private const float RectTransformStartPositionY = -100f;
     private const float FadeTimer = 1f;
-    
+
     public bool IsInConversation { get; private set; }
     public bool HasAllowedPlayerInteraction { get; private set; }
-    
-    public static event Action OnEndConversation;
-    
+
+    private int characterCounter = 0;
+
     private void Update()
     {
         if (!IsInConversation) return;
@@ -58,14 +58,15 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
     public void SetCurrentConversation(ConversationScriptableObject conversationScriptableObject, bool autoStartConversation = false)
     {
         currentConversation = conversationScriptableObject;
-        
-        if(autoStartConversation)
+
+        if (autoStartConversation)
             StartConversation();
     }
 
     public void StartConversation(bool allowPlayerInteraction = true)
     {
         Debug.unityLogger.Log("StartConversation");
+
         if (IsInConversation)
         {
             StartCoroutine(EndConversation());
@@ -73,10 +74,11 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
 
         ClearFields();
         currentDialogueIndex = 0;
+        characterCounter = 0;
+
         dialogueRectTransform.DOAnchorPosY(RectTransformEndPositionY, FadeTimer);
         StartCoroutine(SetDialogue(currentDialogueIndex, FadeTimer));
         IsInConversation = true;
-
         HasAllowedPlayerInteraction = allowPlayerInteraction;
     }
 
@@ -126,13 +128,14 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
         npcNameLabel.text = dialogueData.npcName;
         yield return new WaitForSeconds(textDelay);
 
-        if (dialogueData.audioClip != null)
+        currentBlipClip = textBlipClip;
+        if (dialogueData.audioBlip != null)
         {
-            npcAudioSource.PlayOneShot(dialogueData.audioClip);
+            currentBlipClip = dialogueData.audioBlip;
         }
 
         textAnimator.textFull = dialogueData.dialogue;
-        
+
         OnDialogueShown?.Invoke(dialogueData);
     }
 
@@ -140,9 +143,8 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
     {
         npcNameLabel.text = string.Empty;
         dialogueTextLabel.text = string.Empty;
+        characterCounter = 0;
     }
-
-    private int characterCounter = 0;
 
     public void OnCharacterPrinted()
     {
@@ -150,8 +152,15 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
 
         if (characterCounter % blipFrequency == 0)
         {
-            textAudioSource.pitch = Random.Range(1f - pitchVariation, 1f + pitchVariation);
-            textAudioSource.PlayOneShot(textBlipClip);
+            if (currentBlipClip != null)
+            {
+                textAudioSource.pitch = Random.Range(1f - pitchVariation, 1f + pitchVariation);
+                textAudioSource.PlayOneShot(currentBlipClip);
+            }
+            else
+            {
+                Debug.LogWarning("No blip sound available: both dialogue clip and fallback clip are null.");
+            }
         }
     }
 }

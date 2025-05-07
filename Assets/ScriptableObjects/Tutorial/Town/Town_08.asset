@@ -16,5 +16,5 @@ MonoBehaviour:
   sprite: {fileID: 0}
   dialogue: "Not just for drinks. Rumors and secrets flow freely here \u2013 if you
     know who to ask."
-  audioClip: {fileID: 0}
+  audioBlip: {fileID: 8300000, guid: a7462ee7eec16c941bc4332c37751bd9, type: 3}
   preventPlayerInteraction: 0

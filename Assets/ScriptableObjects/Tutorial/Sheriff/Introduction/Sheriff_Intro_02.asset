@@ -15,5 +15,5 @@ MonoBehaviour:
   npcName: Sheriff Marston
   sprite: {fileID: 0}
   dialogue: "Pick your target, and I\u2019ll take you to where they were last seen."
-  audioClip: {fileID: 0}
+  audioBlip: {fileID: 8300000, guid: f80480274342c38468cdc9f36c6db437, type: 3}
   preventPlayerInteraction: 1

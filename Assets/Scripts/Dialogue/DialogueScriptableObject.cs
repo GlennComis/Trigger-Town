@@ -6,10 +6,10 @@ public class DialogueScriptableObject : ScriptableObject
     [Header("Dialogue")]
     public string npcName;
     public Sprite sprite;
-    public string dialogue;
+    [TextArea(2, 5)] public string dialogue;
 
     [Header("Audio")]
-    public AudioClip audioClip;
+    public AudioClip audioBlip;
 
     [Header("Interaction")]
     public bool preventPlayerInteraction = true;
