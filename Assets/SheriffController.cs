@@ -25,6 +25,7 @@ public class SheriffController : MonoBehaviour
     private Vector3 counterTargetPosition;
     private Vector2 buttonTargetPosition;
     private bool isReturning = false;
+    private bool hasSelectedPoster = false;
 
     private void Start()
     {
@@ -89,6 +90,9 @@ public class SheriffController : MonoBehaviour
 
     public void OnWantedPosterButton()
     {
+        if (hasSelectedPoster) return;
+        
+        hasSelectedPoster = true;
         DialogueManager.Instance.SetCurrentConversation(headOutConversation, true);
         SlideOutWantedPoster();
     }

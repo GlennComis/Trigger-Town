@@ -6,6 +6,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 {
     [SerializeField] private SaveManager saveManager;
     [SerializeField] private CurrencyManager currencyManager;
+    [SerializeField] private PlayerManager playerManager;
 
     public int lastKnowBuildingIndex = 1;
 
@@ -54,8 +55,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         //todo: temp code, remove later
         if (sceneIndex != 0)
         {
-            UIManager.Instance.newsController.gameObject.SetActive(false);
-            UIManager.Instance.glyphs.SetActive(false);
+            UIManager.Instance.SetGlyphActive(false);
         }
 
         StartCoroutine(TransitionSequence(sceneIndex, minTransitionDelay, fadeType));
@@ -90,9 +90,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         //todo: temp code, remove later
         if (sceneIndex == 0)
         {
-            UIManager.Instance.glyphs.SetActive(true);
-            UIManager.Instance.newsController.ShowNextHeadline();
-            UIManager.Instance.newsController.gameObject.SetActive(true);
+            UIManager.Instance.SetGlyphActive(true);
         }
 
         yield return new WaitUntil(() => fadeInDone);

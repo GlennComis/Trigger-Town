@@ -38,6 +38,11 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
 
     private int characterCounter = 0;
 
+    private void OnEnable()
+    {
+        ClearFields();
+    }
+
     private void Update()
     {
         if (!IsInConversation) return;
@@ -65,7 +70,7 @@ public class DialogueManager : SingletonMonoBehaviour<DialogueManager>
 
     public void StartConversation(bool allowPlayerInteraction = true)
     {
-        Debug.unityLogger.Log("StartConversation");
+        //Debug.unityLogger.Log("StartConversation");
 
         if (IsInConversation)
         {

@@ -89,7 +89,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
     private void Start()
     {
-        if (tutorialControllerFastDraw.IsInTutorial())
+        if (!tutorialControllerFastDraw.IsInTutorial())
             StartDraw();
     }
 
@@ -144,7 +144,7 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         HUDManager.Instance.HideCountdown();
 
         SetCameraSway(0f, 0f);
-        ResetCameraFOV();
+        //ResetCameraFOV();
 
         drawStartTime = Time.time;
         drawStarted = false;
@@ -374,13 +374,16 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         }
     }
 
-    public void ResetCameraFOV()
+    private void ResetCameraFOV()
     {
-        fovTween.Kill();
-        if (cinemachineCamera != null)
-        {
-            cinemachineCamera.Lens.FieldOfView = originalFOV;
-        }
+        if (cinemachineCamera == null) return;
+
+        fovTween?.Kill();
+        fovTween = DOTween.To(() => cinemachineCamera.Lens.FieldOfView,
+                fov => cinemachineCamera.Lens.FieldOfView = fov,
+                originalFOV,
+                0.5f) //todo: remove magic variable
+            .SetEase(Ease.InOutSine);
     }
 
     public void PauseAction() => isActionPaused = true;

@@ -76,7 +76,7 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
         
         if (dialogue == townIntroductionSheriff.dialogueScriptableObjects[currentStep])
         {
-            Debug.Log($"Tutorial step {currentStep} triggered");
+            //Debug.Log($"Tutorial step {currentStep} triggered");
 
             switch (currentStep)
             {
@@ -111,8 +111,7 @@ public class TutorialControllerTown : MonoBehaviour, ISaveable
         Debug.Log("Town Tutorial completed");
         
         //todo: remove later temp code
-        UIManager.Instance.glyphs.SetActive(true);
-        UIManager.Instance.newsController.gameObject.SetActive(true);
+        UIManager.Instance.SetGlyphActive(true);
     }
     
     // Track dialogue state to focus on buildings while being in a certain dialogue window

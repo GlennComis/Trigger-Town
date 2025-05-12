@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HUDManager : SingletonMonoBehaviour<HUDManager>
 {
@@ -12,6 +14,9 @@ public class HUDManager : SingletonMonoBehaviour<HUDManager>
     [Header("Win screen")]
     [SerializeField]
     private GameObject winnerContainer;
+    [SerializeField]
+    private Slider xpSlider;
+    
     [SerializeField]
     private GameObject rewardRowPrefab;
     private List<GameObject> rewardRows = new List<GameObject>();
@@ -40,17 +45,23 @@ public class HUDManager : SingletonMonoBehaviour<HUDManager>
 
     public void SetWinScreen(List<Reward> rewards)
     {
+        PlayerManager.Instance.UpdateXpSlider(xpSlider);
+        
         winnerContainer.SetActive(true);
-        var totalScore = 0;
+        
+        PlayerManager.Instance.AddXP(100);
+        PlayerManager.Instance.UpdateXpSlider(xpSlider);
+        var totalReward = 0;
         foreach (var reward in rewards)
         {
             var rewardRow = Instantiate(rewardRowPrefab, rewardRowParentTransform).GetComponent<RewardRow>();
             rewardRow.SeedRewardRow(reward.type, reward.amount);
-            totalScore += reward.amount;
+            totalReward += reward.amount;
             rewardRows.Add(rewardRow.gameObject);
         }
 
-        totalAmountLabel.text = totalScore.ToString();
+        totalAmountLabel.text = totalReward.ToString();
+        CurrencyManager.Instance.Add(totalReward);
     }
     
     public void ShowCountdownNumber(int number)

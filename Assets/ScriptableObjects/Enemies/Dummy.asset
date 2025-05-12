@@ -20,6 +20,7 @@ MonoBehaviour:
   maxReactionTime: 0
   maxHealth: 1
   bountyReward: 10
+  xpReward: 100
   rank: 0
   gunshotClips: []
   pitchRange: {x: 0, y: 0}

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6309223244253099560}
   - component: {fileID: 6859877727118565008}
   - component: {fileID: 3910064839848886551}
-  - component: {fileID: 2699612916963936517}
   m_Layer: 5
   m_Name: NewsController
   m_TagString: Untagged
@@ -77,40 +76,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2699612916963936517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4355319507005031488}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 272cb571d9fe7be438bfd9b8528510b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textRect: {fileID: 5730479774470832426}
-  viewportRect: {fileID: 6309223244253099560}
-  newsLabel: {fileID: 1552827270641315814}
-  scrollSpeed: 150
-  headlines:
-  - "Tip: Use \u2190 and \u2192 to cycle buildings in town."
-  - "Breaking: local prospector found with 14 bullet holes\u2014murderer at large."
-  - "Sheriff offers $150 bounty for wanted murderer \u201CBrother Billy\u201D."
-  - "Saloon owner claims ghost is drinking all the whiskey\u2014again."
-  - "Player tip: Press SPACE to enter buildings you\u2019ve selected."
-  - 'WANTED: Brother Billy. Armed, angry, and overdue on taxes.'
-  - "Trigger Town residents advised: don\u2019t feed the outlaw horses."
-  - "Exploding cactus mystery deepens\u2014Mayor issues statement."
-  - 'Tip: That arrow above buildings shows your current selection. Keep cycling!'
-  - Trigger Town adopts armadillo as official mascot.
-  - Cactus Joe wrestles coyote, wins by knockout.
-  - Local goat elected honorary deputy.
-  - Bandits steal church bell, return it after complaints.
-  - Train delayed due to tumbleweed congestion.
-  - Mayor challenges sheriff to pie-eating contest.
-  - "Poker night ends in duel\u2014no one remembers who won."
-  - Population hits 57 after baby donkey born.
 --- !u!1 &4495908877962832687
 GameObject:
   m_ObjectHideFlags: 0

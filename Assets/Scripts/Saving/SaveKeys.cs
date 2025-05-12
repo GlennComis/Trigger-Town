@@ -5,4 +5,5 @@
     public const string TutorialFastDraw = "tutorial.fastdraw";
     
     public const string Currency = "currency";
+    public const string PlayerXP = "playerxp";
 }

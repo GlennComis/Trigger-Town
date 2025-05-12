@@ -25,7 +25,7 @@ public abstract class CharacterController : MonoBehaviour
     [Tooltip("How long the health bar animation lasts when damaged.")]
     [SerializeField] private float healthBarAnimDuration = 0.5f;
 
-    private float currentHealth;
+    protected int currentHealth;
 
     #endregion
 
@@ -71,15 +71,15 @@ public abstract class CharacterController : MonoBehaviour
 
     #region Health System
 
-    protected void SetupCharacter(int characterHealth, string name)
+    protected void SetupCharacter(int maximumHealth, string name)
     {
-        maxHealth = characterHealth;
+        maxHealth = maximumHealth;
         nameLabel.text = name;
     }
 
     private void InitHealthBar()
     {
-        currentHealth = maxHealth;
+        currentHealth = PlayerManager.Instance.currentHealth;
 
         if (healthSlider != null)
         {
@@ -92,10 +92,9 @@ public abstract class CharacterController : MonoBehaviour
     {
         if (hitRoutine != null)
             StopCoroutine(hitRoutine);
-
+        currentHealth -= 100; //todo: change this to weapon damage + modifiers in the near future
         hitRoutine = StartCoroutine(HitRoutine());
         
-        currentHealth--;
     }
 
     private IEnumerator HitRoutine()

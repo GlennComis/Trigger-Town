@@ -15,6 +15,7 @@ public class EnemyData : ScriptableObject
     #region Combat Behavior
 
     [Header("Combat")]
+    public bool isOneShotKill;
     public bool isPassive;
     public QTEType qteType;
     public float minReactionTime = 0.3f;
@@ -27,6 +28,7 @@ public class EnemyData : ScriptableObject
     [Header("Stats")]
     public int maxHealth = 1;
     public int bountyReward = 10;
+    public int xpReward = 100;
     public EnemyRank rank;
 
     #endregion

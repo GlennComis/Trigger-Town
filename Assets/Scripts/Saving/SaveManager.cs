@@ -25,7 +25,7 @@ public class SaveManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(new SerializationWrapper(saveData));
         File.WriteAllText(SavePath, json);
-        Debug.Log("Game saved to: " + SavePath);
+        //Debug.Log("Game saved to: " + SavePath);
     }
 
 
@@ -33,7 +33,7 @@ public class SaveManager : MonoBehaviour
     {
         if (!File.Exists(SavePath))
         {
-            Debug.LogWarning("Save file not found. Creating new save.");
+            //Debug.LogWarning("Save file not found. Creating new save.");
             Save();
             return;
         }
@@ -53,7 +53,7 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Game loaded from " + SavePath);
+        //Debug.Log("Game loaded from " + SavePath);
     }
 
     [System.Serializable]

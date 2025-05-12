@@ -9,7 +9,7 @@ public class EnemyController : CharacterController
     private float reactionTime;
     private bool canShoot = false;
     private bool hasShot = false;
-
+ 
     private Coroutine shootRoutine;
     private readonly WaitForSeconds playerFiredEarlyDelay = new WaitForSeconds(0.5f);
 
@@ -89,6 +89,7 @@ public class EnemyController : CharacterController
 
     private void HandleResult(bool playerWon)
     {
+        Debug.LogError("Handle result");
         if (playerWon)
             TakeDamage();
 
@@ -115,5 +116,10 @@ public class EnemyController : CharacterController
     public int GetReward()
     {
         return enemyData.bountyReward;
+    }
+    
+    public int GetXpReward()
+    {
+        return enemyData.xpReward;
     }
 }

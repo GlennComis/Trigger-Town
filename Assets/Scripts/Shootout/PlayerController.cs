@@ -2,11 +2,10 @@ using UnityEngine;
 
 public class PlayerController : CharacterController
 {
-    private int playerHealth = 1;
     protected override void Awake()
     {
         base.Awake();
-        SetupCharacter(playerHealth, string.Empty);
+        SetupCharacter(PlayerManager.Instance.maxHealth, string.Empty);
     }
 
     private void OnEnable()
@@ -24,6 +23,8 @@ public class PlayerController : CharacterController
         if (!playerWon && !FastDrawManager.Instance.IsPassiveEnemy())
         {
             TakeDamage();
+            PlayerManager.Instance.currentHealth = currentHealth;
+            UIManager.Instance.SetHealth();
         }
     }
     

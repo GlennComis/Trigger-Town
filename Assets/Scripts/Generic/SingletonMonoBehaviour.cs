@@ -16,6 +16,9 @@ using UnityEngine;
         {
             if (instance == null)
                 SetSingletonInstance();
+            else
+                Destroy(this.gameObject);
+            
         }
 
         /// <summary>
