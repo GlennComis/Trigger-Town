@@ -16,6 +16,11 @@ public class CurrencyManager : SingletonMonoBehaviour<CurrencyManager>, ISaveabl
         gold = STARTING_GOLD;
     }
 
+    private void Start()
+    {
+        UIManager.Instance.SetCurrency();
+    }
+
     public int CurrentAmountOfGold => gold;
 
     public bool CanAfford(int amount) => gold >= amount;
@@ -25,6 +30,7 @@ public class CurrencyManager : SingletonMonoBehaviour<CurrencyManager>, ISaveabl
         if (amount <= 0) return;
         gold += amount;
         OnGoldChanged?.Invoke(gold);
+        UIManager.Instance.SetCurrency();
     }
 
     public bool Spend(int amount)
@@ -32,12 +38,14 @@ public class CurrencyManager : SingletonMonoBehaviour<CurrencyManager>, ISaveabl
         if (!CanAfford(amount)) return false;
         gold -= amount;
         OnGoldChanged?.Invoke(gold);
+        UIManager.Instance.SetCurrency();
         return true;
     }
 
     public void Set(int newAmount)
     {
         gold = Mathf.Max(0, newAmount);
+        UIManager.Instance.SetCurrency();
         OnGoldChanged?.Invoke(gold);
     }
     

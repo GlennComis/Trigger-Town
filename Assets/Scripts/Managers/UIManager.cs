@@ -7,9 +7,9 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
      public FadeTransitionController fadeTransitionController;
 
      [Header("Character Information")]
-     private TextMeshProUGUI healthLabel;
-     private TextMeshProUGUI currencyLabel;
-     private TextMeshProUGUI rankLabel;
+     [SerializeField] private TextMeshProUGUI healthLabel;
+     [SerializeField] private TextMeshProUGUI currencyLabel;
+     [SerializeField] private TextMeshProUGUI rankLabel;
      
      [Header("Help Elements")]
      [SerializeField]

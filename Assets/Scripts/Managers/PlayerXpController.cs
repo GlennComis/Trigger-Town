@@ -11,7 +11,7 @@ public class PlayerXpController : MonoBehaviour, ISaveable
     [SerializeField] private float growthFactor = 1.5f;
 
     [Header("Animation")]
-    [SerializeField] private float xpFillDuration = 0.5f;
+    [SerializeField] private float xpFillDuration = 1.5f;
 
     private int currentLevel = 1;
     private int currentXP = 0;

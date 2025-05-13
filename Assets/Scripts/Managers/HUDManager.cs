@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
@@ -45,12 +46,8 @@ public class HUDManager : SingletonMonoBehaviour<HUDManager>
 
     public void SetWinScreen(List<Reward> rewards)
     {
-        PlayerManager.Instance.UpdateXpSlider(xpSlider);
-        
+        StartCoroutine(AddXpRoutine());
         winnerContainer.SetActive(true);
-        
-        PlayerManager.Instance.AddXP(100);
-        PlayerManager.Instance.UpdateXpSlider(xpSlider);
         var totalReward = 0;
         foreach (var reward in rewards)
         {
@@ -62,6 +59,14 @@ public class HUDManager : SingletonMonoBehaviour<HUDManager>
 
         totalAmountLabel.text = totalReward.ToString();
         CurrencyManager.Instance.Add(totalReward);
+    }
+
+    private IEnumerator AddXpRoutine()
+    {
+        PlayerManager.Instance.UpdateXpSlider(xpSlider);
+        yield return new WaitForSeconds(1f);
+        PlayerManager.Instance.AddXP(50);
+        PlayerManager.Instance.UpdateXpSlider(xpSlider, false);
     }
     
     public void ShowCountdownNumber(int number)
