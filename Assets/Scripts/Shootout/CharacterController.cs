@@ -92,9 +92,7 @@ public abstract class CharacterController : MonoBehaviour
     {
         if (hitRoutine != null)
             StopCoroutine(hitRoutine);
-        Debug.LogError("Current health = " + currentHealth);
         currentHealth -= 10; //todo: change this to weapon damage + modifiers in the near future
-        Debug.LogError("Current health = " + currentHealth);
         hitRoutine = StartCoroutine(HitRoutine());
         
     }
