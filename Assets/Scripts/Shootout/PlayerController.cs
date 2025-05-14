@@ -24,7 +24,13 @@ public class PlayerController : CharacterController
         {
             TakeDamage();
             PlayerManager.Instance.currentHealth = currentHealth;
-            UIManager.Instance.SetHealth();
+            
+            if (UIManager.instance_exists)
+            {
+                UIManager.Instance.SetHealth();
+            }else{
+                Debug.LogError("UI Manager does not exist");
+            }
         }
     }
     

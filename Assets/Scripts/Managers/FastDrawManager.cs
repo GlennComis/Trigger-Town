@@ -106,12 +106,15 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
 
     public void StopDraw()
     {
+        HUDManager.Instance.HideCountdown();
+        HUDManager.Instance.SetDrawText(false);
+        
         StopActiveRoutine();
+        
         drawStarted = false;
         canShoot = false;
         hasResult = false;
-
-        HUDManager.Instance.SetDrawText(false);
+        
         ResetTimeScale();
         SetCameraSway(0f, 0f);
         ResetCameraFOV();
@@ -144,7 +147,6 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         HUDManager.Instance.HideCountdown();
 
         SetCameraSway(0f, 0f);
-        //ResetCameraFOV();
 
         drawStartTime = Time.time;
         drawStarted = false;
@@ -240,14 +242,17 @@ public class FastDrawManager : SingletonMonoBehaviour<FastDrawManager>
         OnDrawResult?.Invoke(isPlayer);
 
         if (!tutorialControllerFastDraw.isInTutorial)
+        {
             StartCoroutine(ResetRoutine());
+        }
+           
     }
 
     private IEnumerator ResetRoutine()
     {
+        StopDraw();
         StopActiveRoutine();
         yield return timeBetweenRounds;
-        HUDManager.Instance.SetDrawText(false);
         StartDraw();
         OnQTEReset?.Invoke();
     }

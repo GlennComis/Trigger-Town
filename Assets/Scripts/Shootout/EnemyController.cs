@@ -92,6 +92,9 @@ public class EnemyController : CharacterController
         Debug.LogError("Handle result");
         if (playerWon)
             TakeDamage();
+        else
+            Shoot();
+        
 
         canShoot = false;
         hasShot = true;
