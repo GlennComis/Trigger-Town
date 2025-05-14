@@ -19,7 +19,7 @@ MonoBehaviour:
   qteType: 0
   minReactionTime: 1
   maxReactionTime: 2
-  maxHealth: 1000
+  maxHealth: 100
   bountyReward: 10
   xpReward: 100
   rank: 0

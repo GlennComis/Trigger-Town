@@ -1710,11 +1710,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3116719188301509598, guid: e42a1b5d8256ae44cbb69cd9e346199f, type: 3}
       propertyPath: maxHealth
-      value: 1000
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3116719188301509598, guid: e42a1b5d8256ae44cbb69cd9e346199f, type: 3}
       propertyPath: currentHealth
-      value: 1000
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3345247473430848411, guid: e42a1b5d8256ae44cbb69cd9e346199f, type: 3}
       propertyPath: m_Name

@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class PlayerController : CharacterController
 {
-    protected override void Awake()
+    protected override void Start()
     {
-        base.Awake();
         SetupCharacter(PlayerManager.Instance.maxHealth, string.Empty);
+        base.Start();
     }
+    
 
     private void OnEnable()
     {
