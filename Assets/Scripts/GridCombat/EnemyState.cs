@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public interface IEnemyState
 {
@@ -17,6 +18,7 @@ public enum EnemyStateType
     Heal,
     Stunned,
     SeekPlayer,
+    PathfindToTile,
 }
 
 public class IdleState : IEnemyState
@@ -152,4 +154,77 @@ public class SeekPlayerState : IEnemyState
         Debug.Log($"{enemy.name} finished seeking.");
     }
 }
+
+public class PathfindToTileState : IEnemyState
+{
+    private EnemyAIController enemy;
+    private Queue<Vector2Int> path = new();
+    private float waitTimer = 0f;
+
+    private const float StepDelay = 1.0f;
+
+    public void Enter(EnemyAIController enemy)
+    {
+        this.enemy = enemy;
+        waitTimer = 0f;
+
+        if (enemy.mover == null || GridManager.Instance == null)
+        {
+            Debug.LogWarning("Pathfinding aborted: missing mover or GridManager.");
+            return;
+        }
+
+        Vector2Int start = enemy.mover.gridPosition;
+        Vector2Int target = enemy.targetTile;
+
+        // Generate A* path
+        path = GridManager.Instance.FindPath(start, target);
+
+        // Skip the current tile
+        if (path.Count > 0 && path.Peek() == start)
+        {
+            path.Dequeue();
+        }
+
+        if (path.Count == 0)
+        {
+            Debug.Log($"{enemy.name} has no valid path to target.");
+        }
+    }
+
+    public void Update()
+    {
+        if (enemy.mover.isMoving)
+            return;
+
+        waitTimer += Time.deltaTime;
+
+        if (waitTimer < StepDelay)
+            return;
+
+        waitTimer = 0f;
+
+        if (path.Count == 0)
+        {
+            // Destination reached
+            enemy.TransitionToState(EnemyStateType.Idle);
+            return;
+        }
+
+        Vector2Int nextTile = path.Dequeue();
+        bool moved = enemy.mover.TryMoveTo(nextTile);
+
+        if (!moved)
+        {
+            Debug.LogWarning($"{enemy.name} failed to move to {nextTile}, aborting path.");
+            enemy.TransitionToState(EnemyStateType.Idle);
+        }
+    }
+
+    public void Exit()
+    {
+        path.Clear();
+    }
+}
+
 

@@ -24,6 +24,7 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
         GenerateGrids();
     }
 
+    #region TileCreation
     public Vector3 GetWorldPosition(Vector2Int gridPos, bool isPlayer)
     {
         float xOffset = isPlayer ? 0 : columns * tileSize.x + 1f;
@@ -76,7 +77,9 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
         sr.color = color;
         sr.sortingOrder = 5;
     }
+    #endregion TileCreation
 
+    #region Enemy
     public void RegisterEnemy(Vector2Int gridPosition, GameObject enemy)
     {
         if (!enemyGridMap.ContainsKey(gridPosition))
@@ -112,6 +115,24 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
     {
         return enemyGridMap.ContainsKey(pos);
     }
+    #endregion Enemy
+    
+    #region Player
+    public void RegisterPlayer(PlayerGridMover player)
+    {
+        if (!playerList.Contains(player)) 
+        {
+            playerList.Add(player);
+        }
+    }
+    
+    public void UnregisterPlayer(PlayerGridMover player)
+    {
+        if (playerList.Contains(player)) 
+        {
+            playerList.Remove(player);
+        }
+    }
     
     public Vector2Int GetClosestPlayerGridPosition(Vector2Int fromPos)
     {
@@ -130,22 +151,87 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
 
         return closest;
     }
+    
+    #endregion Player
 
-    public void RegisterPlayer(PlayerGridMover player)
+    #region PathFinding
+    
+    public Queue<Vector2Int> FindPath(Vector2Int start, Vector2Int goal)
     {
-        if (!playerList.Contains(player))
+        var openSet = new PriorityQueue<Vector2Int>();
+        var cameFrom = new Dictionary<Vector2Int, Vector2Int>();
+        var gScore = new Dictionary<Vector2Int, float>();
+        var fScore = new Dictionary<Vector2Int, float>();
+
+        openSet.Enqueue(start, 0);
+        gScore[start] = 0f;
+        fScore[start] = Heuristic(start, goal);
+
+        while (openSet.Count > 0)
         {
-            playerList.Add(player);
+            Vector2Int current = openSet.Dequeue();
+
+            if (current == goal)
+            {
+                return ReconstructPath(cameFrom, current);
+            }
+
+            foreach (Vector2Int neighbor in GetNeighbors(current))
+            {
+                if (IsTileOccupied(neighbor)) continue;
+
+                float tentativeG = gScore[current] + 1; // All moves cost 1
+
+                if (!gScore.ContainsKey(neighbor) || tentativeG < gScore[neighbor])
+                {
+                    cameFrom[neighbor] = current;
+                    gScore[neighbor] = tentativeG;
+                    fScore[neighbor] = tentativeG + Heuristic(neighbor, goal);
+
+                    if (!openSet.Contains(neighbor))
+                        openSet.Enqueue(neighbor, fScore[neighbor]);
+                }
+            }
+        }
+
+        return new Queue<Vector2Int>(); // No path found
+    }
+
+    private float Heuristic(Vector2Int a, Vector2Int b)
+    {
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y); // Manhattan distance
+    }
+
+    private IEnumerable<Vector2Int> GetNeighbors(Vector2Int pos)
+    {
+        Vector2Int[] directions = {
+            Vector2Int.up,
+            Vector2Int.down,
+            Vector2Int.left,
+            Vector2Int.right
+        };
+
+        foreach (var dir in directions)
+        {
+            Vector2Int neighbor = pos + dir;
+            if (IsWithinBounds(neighbor))
+                yield return neighbor;
         }
     }
 
-    public void UnregisterPlayer(PlayerGridMover player)
+    private Queue<Vector2Int> ReconstructPath(Dictionary<Vector2Int, Vector2Int> cameFrom, Vector2Int current)
     {
-        if (playerList.Contains(player))
+        var totalPath = new List<Vector2Int> { current };
+
+        while (cameFrom.TryGetValue(current, out Vector2Int previous))
         {
-            playerList.Remove(player);
+            current = previous;
+            totalPath.Insert(0, current);
         }
+
+        return new Queue<Vector2Int>(totalPath);
     }
-
-
+    
+    
+    #endregion PathFinding
 }

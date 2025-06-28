@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(EnemyGridMover))]
 public class EnemyAIController : CharacterController, IStatefulCharacter
@@ -14,6 +15,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
     private HealState healState;
     private StunnedState stunnedState;
     private SeekPlayerState seekPlayerState;
+    private PathfindToTileState pathfindToTileState;
 
     [Header("State Settings")]
     public EnemyGridMover mover;
@@ -28,6 +30,8 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
 
     [Range(0f, 1f)]
     public float aggressionLevel = 0.5f;
+
+    public Vector2Int targetTile;
 
     public EnemyStateType CurrentStateType => currentStateType;
     public string CharacterName => name;
@@ -46,6 +50,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         healState = new HealState();
         stunnedState = new StunnedState();
         seekPlayerState = new SeekPlayerState();
+        pathfindToTileState = new PathfindToTileState();
 
         // Cache mover
         mover = GetComponent<EnemyGridMover>();
@@ -97,6 +102,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
             EnemyStateType.Heal => healState,
             EnemyStateType.Stunned => stunnedState,
             EnemyStateType.SeekPlayer => seekPlayerState,
+            EnemyStateType.PathfindToTile => pathfindToTileState,
             _ => null
         };
     }
@@ -113,6 +119,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
             EnemyStateType.Heal => 1.25f,
             EnemyStateType.Stunned => 2f,
             EnemyStateType.SeekPlayer => 1.75f,
+            EnemyStateType.PathfindToTile => 1.5f,
             _ => 1f
         };
     }

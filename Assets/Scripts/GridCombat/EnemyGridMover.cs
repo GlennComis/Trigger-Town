@@ -59,6 +59,17 @@ public class EnemyGridMover : MonoBehaviour
             }
         }
     }
+    
+    public void TryMoveTo(Vector2Int target)
+    {
+        if (!GridManager.Instance.IsWithinBounds(target)) return;
+        if (GridManager.Instance.IsTileOccupied(target)) return;
+
+        previousPosition = gridPosition;
+        gridPosition = target;
+        targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, false) + positionOffset;
+        isMoving = true;
+    }
 
     public void SeekPlayer()
     {
