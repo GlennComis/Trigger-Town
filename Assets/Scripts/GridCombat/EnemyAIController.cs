@@ -152,7 +152,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         Debug.Log($"{name} moves!");
         if (Random.value < aggressionLevel)
         {
-            mover.SeekPlayer(); // New smarter method
+            mover.SeekPlayer();
         }
         else
         {
