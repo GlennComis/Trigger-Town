@@ -25,6 +25,9 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
     private float stateTimer;
     public float minStateDuration = 1f;
 
+    [Header("Behavior Settings")]
+    [Range(0f, 1f)] public float aggressionLevel = 0.5f; // 0 = random, 1 = always seek player
+
     public EnemyStateType CurrentStateType => currentStateType;
     public string CharacterName => name;
     public string CurrentState => currentStateType.ToString();
@@ -147,7 +150,14 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
     public void MoveToNextPosition()
     {
         Debug.Log($"{name} moves!");
-        mover.TryMove();
+        if (Random.value < aggressionLevel)
+        {
+            mover.SeekPlayer(); // New smarter method
+        }
+        else
+        {
+            mover.TryMove();
+        }
     }
 
     public void PerformAttack()
@@ -189,7 +199,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         base.TakeDamage(amount);
         TransitionToState(EnemyStateType.TookDamage);
     }
-    
+
     protected override void Die()
     {
         if (mover != null)
