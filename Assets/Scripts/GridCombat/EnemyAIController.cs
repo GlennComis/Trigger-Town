@@ -22,8 +22,11 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
 
     public bool isStunned;
 
+    private float stateTimer;
+    public float minStateDuration = 1f;
+
     public EnemyStateType CurrentStateType => currentStateType;
-    public string CharacterName => "Enemy";
+    public string CharacterName => name;
     public string CurrentState => currentStateType.ToString();
 
     protected override void Awake()
@@ -47,12 +50,18 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
     {
         TransitionToState(EnemyStateType.Idle);
         attackTimer = attackCooldown;
+        stateTimer = 0f;
     }
 
     private void Update()
     {
         currentState?.Update();
-        EvaluateTransitions();
+        stateTimer += Time.deltaTime;
+
+        if (stateTimer >= minStateDuration)
+        {
+            EvaluateTransitions();
+        }
     }
 
     public void TransitionToState(EnemyStateType newStateType)
@@ -64,6 +73,9 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
 
         currentStateType = newStateType;
         currentState = GetStateInstance(newStateType);
+
+        minStateDuration = GetMinDurationForState(newStateType);
+        stateTimer = 0f;
 
         currentState?.Enter(this);
     }
@@ -80,6 +92,21 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
             EnemyStateType.Heal => healState,
             EnemyStateType.Stunned => stunnedState,
             _ => null
+        };
+    }
+
+    private float GetMinDurationForState(EnemyStateType state)
+    {
+        return state switch
+        {
+            EnemyStateType.Idle => 0.75f,
+            EnemyStateType.Move => 1.5f,
+            EnemyStateType.Attack => 2f,
+            EnemyStateType.TookDamage => 1f,
+            EnemyStateType.LowHealth => 1f,
+            EnemyStateType.Heal => 1.25f,
+            EnemyStateType.Stunned => 2f,
+            _ => 1f
         };
     }
 
@@ -172,5 +199,4 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
 
         base.Die();
     }
-
 }
