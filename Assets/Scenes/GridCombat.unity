@@ -3413,6 +3413,8 @@ MonoBehaviour:
   mover: {fileID: 7548303116868740975}
   attackCooldown: 3
   isStunned: 0
+  minStateDuration: 1
+  aggressionLevel: 0.75
 --- !u!114 &7639857186474204854
 MonoBehaviour:
   m_ObjectHideFlags: 0

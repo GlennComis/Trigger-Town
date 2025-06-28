@@ -60,16 +60,18 @@ public class EnemyGridMover : MonoBehaviour
         }
     }
     
-    public void TryMoveTo(Vector2Int target)
+    public bool TryMoveTo(Vector2Int target)
     {
-        if (!GridManager.Instance.IsWithinBounds(target)) return;
-        if (GridManager.Instance.IsTileOccupied(target)) return;
+        if (!GridManager.Instance.IsWithinBounds(target) || GridManager.Instance.IsTileOccupied(target))
+            return false;
 
         previousPosition = gridPosition;
         gridPosition = target;
         targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, false) + positionOffset;
         isMoving = true;
+        return true;
     }
+
 
     public void SeekPlayer()
     {
