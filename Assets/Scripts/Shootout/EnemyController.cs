@@ -89,10 +89,10 @@ public class EnemyController : CharacterController
 
     private void HandleResult(bool playerWon)
     {
-        if (playerWon)
+        /*if (playerWon)
             TakeDamage();
         else
-            Shoot();
+            Shoot();*/
         
 
         canShoot = false;

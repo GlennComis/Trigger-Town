@@ -6,7 +6,7 @@ using DG.Tweening;
 using TMPro;
 using Random = UnityEngine.Random;
 
-public abstract class CharacterController : MonoBehaviour
+public abstract class CharacterController : MonoBehaviour, IHealth
 {
     #region Animator
 
@@ -17,12 +17,10 @@ public abstract class CharacterController : MonoBehaviour
     #endregion
 
     #region Health
-    private int maxHealth;
 
-    [Tooltip("Slider UI element representing health bar.")]
+    [Header("Health")]
+    [SerializeField] private int maxHealth = 100;
     [SerializeField] private Slider healthSlider;
-
-    [Tooltip("How long the health bar animation lasts when damaged.")]
     [SerializeField] private float healthBarAnimDuration = 0.5f;
 
     protected int currentHealth;
@@ -33,8 +31,6 @@ public abstract class CharacterController : MonoBehaviour
 
     [Header("Sound")]
     [SerializeField] private AudioSource audioSource;
-
-    [Tooltip("Gunshot sound clips to randomly pick from.")]
     [SerializeField] private List<AudioClip> gunshotClips;
 
     private const float GUN_SHOT_DELAY = 0.25f;
@@ -59,6 +55,7 @@ public abstract class CharacterController : MonoBehaviour
 
     protected virtual void Awake()
     {
+        SetupCharacter(maxHealth, gameObject.name);
         flashMaterial = spriteRenderer.material;
     }
 
@@ -74,13 +71,13 @@ public abstract class CharacterController : MonoBehaviour
     protected void SetupCharacter(int maximumHealth, string name)
     {
         maxHealth = maximumHealth;
-        nameLabel.text = name;
+        currentHealth = maxHealth;
+        if (nameLabel != null)
+            nameLabel.text = name;
     }
 
     private void InitHealthBar()
     {
-        currentHealth = PlayerManager.Instance.currentHealth;
-
         if (healthSlider != null)
         {
             healthSlider.maxValue = maxHealth;
@@ -88,18 +85,19 @@ public abstract class CharacterController : MonoBehaviour
         }
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int amount)
     {
         if (hitRoutine != null)
             StopCoroutine(hitRoutine);
-        currentHealth -= 10; //todo: change this to weapon damage + modifiers in the near future
+
+        currentHealth -= amount;
         hitRoutine = StartCoroutine(HitRoutine());
-        
     }
 
     private IEnumerator HitRoutine()
     {
         yield return new WaitForSeconds(0.5f);
+
         flashMaterial.SetFloat(FlashAmountShaderProperty, 1);
         yield return FLASH_INTERVAL;
         flashMaterial.SetFloat(FlashAmountShaderProperty, 0);
@@ -114,16 +112,15 @@ public abstract class CharacterController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(healthBarAnimDuration);
-        
+
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
     protected virtual void Die()
     {
-        Debug.Log("Character has died");
+        Debug.Log($"{gameObject.name} has died.");
+        Destroy(gameObject);
     }
 
     #endregion
@@ -132,9 +129,7 @@ public abstract class CharacterController : MonoBehaviour
 
     public void Shoot()
     {
-        if (animator != null)
-            animator.SetTrigger(ShootStringHash);
-
+        animator?.SetTrigger(ShootStringHash);
         PlayGunShotClip();
     }
 
@@ -142,13 +137,12 @@ public abstract class CharacterController : MonoBehaviour
     {
         if (gunshotClips == null || gunshotClips.Count == 0 || audioSource == null)
         {
-            Debug.LogWarning("AudioManager: No clips or AudioSource assigned!");
+            Debug.LogWarning("Missing audio clip or AudioSource.");
             return;
         }
 
         AudioClip randomClip = gunshotClips[Random.Range(0, gunshotClips.Count)];
         audioSource.pitch = Random.Range(pitchRange.x, pitchRange.y);
-
         audioSource.clip = randomClip;
         audioSource.PlayDelayed(GUN_SHOT_DELAY);
     }

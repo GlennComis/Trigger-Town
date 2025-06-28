@@ -23,7 +23,7 @@ public class PlayerController : CharacterController
     {
         if (!playerWon && !FastDrawManager.Instance.IsPassiveEnemy())
         {
-            TakeDamage();
+            /*TakeDamage();*/
             PlayerManager.Instance.currentHealth = currentHealth;
             
             if (UIManager.instance_exists)
