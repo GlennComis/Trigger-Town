@@ -15,7 +15,7 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
     public Color enemyTileColor = Color.red;
     public Transform tileParent; // Optional, for scene hierarchy cleanliness
     
-    
+    private readonly List<PlayerGridMover> playerList = new();
     private Dictionary<Vector2Int, GameObject> enemyGridMap = new();
     
     protected override void Awake()
@@ -112,5 +112,40 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
     {
         return enemyGridMap.ContainsKey(pos);
     }
+    
+    public Vector2Int GetClosestPlayerGridPosition(Vector2Int fromPos)
+    {
+        Vector2Int closest = new Vector2Int(-1, -1);
+        float minDistance = float.MaxValue;
+
+        foreach (var player in playerList)
+        {
+            float dist = Vector2Int.Distance(player.gridPosition, fromPos);
+            if (dist < minDistance)
+            {
+                minDistance = dist;
+                closest = player.gridPosition;
+            }
+        }
+
+        return closest;
+    }
+
+    public void RegisterPlayer(PlayerGridMover player)
+    {
+        if (!playerList.Contains(player))
+        {
+            playerList.Add(player);
+        }
+    }
+
+    public void UnregisterPlayer(PlayerGridMover player)
+    {
+        if (playerList.Contains(player))
+        {
+            playerList.Remove(player);
+        }
+    }
+
 
 }

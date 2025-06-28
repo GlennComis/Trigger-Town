@@ -15,12 +15,20 @@ public class PlayerGridMover : CharacterController
     private bool isMoving = false;
     private bool isShooting = false;
     private float shootTimer = 0f;
-
+    
     protected override void Start()
     {
         base.Start();
         targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, true) + positionOffset;
         transform.position = targetWorldPosition;
+
+        GridManager.Instance.RegisterPlayer(this);
+    }
+
+    private void OnDestroy()
+    {
+        if (GridManager.Instance != null)
+            GridManager.Instance.UnregisterPlayer(this);
     }
 
     private void Update()

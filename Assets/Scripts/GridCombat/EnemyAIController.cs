@@ -13,6 +13,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
     private LowHealthState lowHealthState;
     private HealState healState;
     private StunnedState stunnedState;
+    private SeekPlayerState seekPlayerState;
 
     [Header("State Settings")]
     public EnemyGridMover mover;
@@ -25,8 +26,8 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
     private float stateTimer;
     public float minStateDuration = 1f;
 
-    [Header("Behavior Settings")]
-    [Range(0f, 1f)] public float aggressionLevel = 0.5f; // 0 = random, 1 = always seek player
+    [Range(0f, 1f)]
+    public float aggressionLevel = 0.5f;
 
     public EnemyStateType CurrentStateType => currentStateType;
     public string CharacterName => name;
@@ -44,6 +45,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         lowHealthState = new LowHealthState();
         healState = new HealState();
         stunnedState = new StunnedState();
+        seekPlayerState = new SeekPlayerState();
 
         // Cache mover
         mover = GetComponent<EnemyGridMover>();
@@ -94,6 +96,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
             EnemyStateType.LowHealth => lowHealthState,
             EnemyStateType.Heal => healState,
             EnemyStateType.Stunned => stunnedState,
+            EnemyStateType.SeekPlayer => seekPlayerState,
             _ => null
         };
     }
@@ -109,6 +112,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
             EnemyStateType.LowHealth => 1f,
             EnemyStateType.Heal => 1.25f,
             EnemyStateType.Stunned => 2f,
+            EnemyStateType.SeekPlayer => 1.75f,
             _ => 1f
         };
     }
@@ -124,6 +128,12 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         if (currentHealth <= maxHealth * 0.3f)
         {
             TransitionToState(EnemyStateType.LowHealth);
+            return;
+        }
+
+        if (aggressionLevel > 0.7f && IsPlayerVisible() && currentStateType != EnemyStateType.SeekPlayer)
+        {
+            TransitionToState(EnemyStateType.SeekPlayer);
             return;
         }
 
@@ -146,18 +156,26 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         }
     }
 
+    private bool IsPlayerVisible()
+    {
+        Vector2Int closestPlayerPos = GridManager.Instance.GetClosestPlayerGridPosition(mover.gridPosition);
+        if (closestPlayerPos.x == -1 && closestPlayerPos.y == -1)
+            return false;
+
+        return Vector2Int.Distance(mover.gridPosition, closestPlayerPos) < 4f;
+    }
+
     // Public methods that states can call
     public void MoveToNextPosition()
     {
         Debug.Log($"{name} moves!");
-        if (Random.value < aggressionLevel)
-        {
-            mover.SeekPlayer();
-        }
-        else
-        {
-            mover.TryMove();
-        }
+        mover.TryMove();
+    }
+
+    public void SeekPlayer()
+    {
+        Debug.Log($"{name} seeks player!");
+        mover.SeekPlayer();
     }
 
     public void PerformAttack()

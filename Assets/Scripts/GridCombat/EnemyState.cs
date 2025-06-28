@@ -16,6 +16,7 @@ public enum EnemyStateType
     LowHealth,
     Heal,
     Stunned,
+    SeekPlayer,
 }
 
 public class IdleState : IEnemyState
@@ -129,3 +130,26 @@ public class StunnedState : IEnemyState
         Debug.Log($"{enemy.name} is no longer stunned.");
     }
 }
+
+public class SeekPlayerState : IEnemyState
+{
+    private EnemyAIController enemy;
+
+    public void Enter(EnemyAIController enemy)
+    {
+        this.enemy = enemy;
+        Debug.Log($"{enemy.name} is seeking the player!");
+        enemy.SeekPlayer();
+    }
+
+    public void Update()
+    {
+        
+    }
+
+    public void Exit()
+    {
+        Debug.Log($"{enemy.name} finished seeking.");
+    }
+}
+

@@ -110,6 +110,10 @@ public abstract class CharacterController : MonoBehaviour, IHealth
         {
             healthSlider.DOValue(currentHealth, healthBarAnimDuration).SetEase(Ease.OutCubic);
         }
+        else
+        {
+            Debug.LogError("Health slider is not assigned", this.gameObject);
+        }
 
         yield return new WaitForSeconds(healthBarAnimDuration);
 
