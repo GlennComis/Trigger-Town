@@ -25,13 +25,22 @@ public class CharacterStateDebugger : MonoBehaviour
     private void RefreshCharacterList()
     {
         trackedCharacters.Clear();
-        IStatefulCharacter[] found = FindObjectsOfType<MonoBehaviour>(true) as IStatefulCharacter[];
-        foreach (var c in found)
+
+        MonoBehaviour[] allBehaviours = FindObjectsOfType<MonoBehaviour>(true);
+        foreach (var behaviour in allBehaviours)
         {
-            if (c != null)
-                trackedCharacters.Add(c);
+            if (behaviour is IStatefulCharacter character)
+            {
+                trackedCharacters.Add(character);
+            }
+        }
+
+        if (trackedCharacters.Count == 0)
+        {
+            Debug.LogWarning("No IStatefulCharacter instances found.");
         }
     }
+
 
     private void OnGUI()
     {

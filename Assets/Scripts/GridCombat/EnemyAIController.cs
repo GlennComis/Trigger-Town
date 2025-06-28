@@ -23,7 +23,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
     public bool isStunned;
 
     public EnemyStateType CurrentStateType => currentStateType;
-    public string CharacterName => name;
+    public string CharacterName => "Enemy";
     public string CurrentState => currentStateType.ToString();
 
     protected override void Awake()
