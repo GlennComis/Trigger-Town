@@ -8,7 +8,6 @@ public class WeaponData : ScriptableObject
     public float fireRate = 0.5f;
     public int maxPenetration = 1; // 1 for normal, 2 for sniper, 0 for AoE
     public WeaponTargetingPattern pattern;
-    public int damage = 10;
 
     public WeaponEffectBase[] effects; // modular stackable effects
 }

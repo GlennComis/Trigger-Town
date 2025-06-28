@@ -37,10 +37,13 @@ public class PlayerGridMover : CharacterController
 
         if (!isMoving && Input.GetKeyDown(KeyCode.Space))
         {
-            weaponController.TryShoot(gridPosition);
-            Shoot(); // triggers animation and sound
-            isShooting = true;
-            shootTimer = shootCooldown;
+            if (weaponController.CanShoot)
+            {
+                weaponController.TryShoot(gridPosition);
+                Shoot();
+                isShooting = true;
+                shootTimer = shootCooldown;
+            }
             return;
         }
 
@@ -72,4 +75,5 @@ public class PlayerGridMover : CharacterController
             }
         }
     }
+
 }

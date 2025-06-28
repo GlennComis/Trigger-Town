@@ -7,6 +7,8 @@ public class WeaponController : MonoBehaviour
     public WeaponData currentWeapon;
     private bool canShoot = true;
 
+    public bool CanShoot => canShoot; // ← Add this
+
     public void TryShoot(Vector2Int userGridPos)
     {
         if (!canShoot || currentWeapon == null) return;
