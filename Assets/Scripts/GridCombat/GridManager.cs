@@ -108,4 +108,9 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
         return enemy;
     }
 
+    public bool IsTileOccupied(Vector2Int pos)
+    {
+        return enemyGridMap.ContainsKey(pos);
+    }
+
 }

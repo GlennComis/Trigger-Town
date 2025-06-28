@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(EnemyGridMover))]
-public class EnemyAIController : MonoBehaviour
+public class EnemyAIController : CharacterController, IStatefulCharacter
 {
     private IEnemyState currentState;
     private EnemyStateType currentStateType;
@@ -17,10 +17,19 @@ public class EnemyAIController : MonoBehaviour
     [Header("State Settings")]
     public EnemyGridMover mover;
 
-    public EnemyStateType CurrentStateType => currentStateType;
+    public float attackCooldown = 3f;
+    private float attackTimer;
 
-    private void Awake()
+    public bool isStunned;
+
+    public EnemyStateType CurrentStateType => currentStateType;
+    public string CharacterName => name;
+    public string CurrentState => currentStateType.ToString();
+
+    protected override void Awake()
     {
+        base.Awake();
+
         // Initialize state instances
         idleState = new IdleState();
         moveState = new MoveState();
@@ -37,11 +46,13 @@ public class EnemyAIController : MonoBehaviour
     private void Start()
     {
         TransitionToState(EnemyStateType.Idle);
+        attackTimer = attackCooldown;
     }
 
     private void Update()
     {
         currentState?.Update();
+        EvaluateTransitions();
     }
 
     public void TransitionToState(EnemyStateType newStateType)
@@ -72,10 +83,44 @@ public class EnemyAIController : MonoBehaviour
         };
     }
 
+    private void EvaluateTransitions()
+    {
+        if (isStunned)
+        {
+            TransitionToState(EnemyStateType.Stunned);
+            return;
+        }
+
+        if (currentHealth <= maxHealth * 0.3f)
+        {
+            TransitionToState(EnemyStateType.LowHealth);
+            return;
+        }
+
+        if (attackTimer <= 0f)
+        {
+            TransitionToState(EnemyStateType.Attack);
+            attackTimer = attackCooldown;
+            return;
+        }
+
+        attackTimer -= Time.deltaTime;
+
+        if (!mover.isMoving)
+        {
+            TransitionToState(EnemyStateType.Move);
+        }
+        else
+        {
+            TransitionToState(EnemyStateType.Idle);
+        }
+    }
+
     // Public methods that states can call
     public void MoveToNextPosition()
     {
         Debug.Log($"{name} moves!");
+        mover.TryMove();
     }
 
     public void PerformAttack()
@@ -96,10 +141,36 @@ public class EnemyAIController : MonoBehaviour
     public void Heal()
     {
         Debug.Log($"{name} heals!)");
+        currentHealth += 10;
+        currentHealth = Mathf.Min(currentHealth, maxHealth);
     }
 
     public void Stun()
     {
         Debug.Log($"{name} Stunned!");
+        isStunned = true;
+        Invoke(nameof(ClearStun), 2f);
     }
+
+    private void ClearStun()
+    {
+        isStunned = false;
+    }
+
+    public override void TakeDamage(int amount)
+    {
+        base.TakeDamage(amount);
+        TransitionToState(EnemyStateType.TookDamage);
+    }
+    
+    protected override void Die()
+    {
+        if (mover != null)
+        {
+            GridManager.Instance.UnregisterEnemy(mover.gridPosition);
+        }
+
+        base.Die();
+    }
+
 }

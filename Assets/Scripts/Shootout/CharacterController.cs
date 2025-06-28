@@ -19,7 +19,7 @@ public abstract class CharacterController : MonoBehaviour, IHealth
     #region Health
 
     [Header("Health")]
-    [SerializeField] private int maxHealth = 100;
+    [SerializeField] protected int maxHealth = 100;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private float healthBarAnimDuration = 0.5f;
 
@@ -85,7 +85,7 @@ public abstract class CharacterController : MonoBehaviour, IHealth
         }
     }
 
-    public void TakeDamage(int amount)
+    public virtual void TakeDamage(int amount)
     {
         if (hitRoutine != null)
             StopCoroutine(hitRoutine);

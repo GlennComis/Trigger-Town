@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EnemyGridMover : CharacterController
+public class EnemyGridMover : MonoBehaviour
 {
     public float moveSpeed = 4f;
     public Vector2Int gridPosition = new Vector2Int(3, 1);
@@ -8,14 +8,13 @@ public class EnemyGridMover : CharacterController
     public Vector3 positionOffset = Vector3.zero;
 
     private Vector3 targetWorldPosition;
-    private bool isMoving = false;
+    public bool isMoving = false;
 
     private float moveCooldown = 2f;
     private float moveTimer = 0f;
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
         targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, false) + positionOffset;
         transform.position = targetWorldPosition;
         GridManager.Instance.RegisterEnemy(gridPosition, gameObject);
@@ -44,7 +43,7 @@ public class EnemyGridMover : CharacterController
         }
     }
 
-    private void TryMove()
+    public void TryMove()
     {
         Vector2Int[] directions = new[]
         {
@@ -57,11 +56,12 @@ public class EnemyGridMover : CharacterController
         for (int i = 0; i < 10; i++)
         {
             Vector2Int dir = directions[Random.Range(0, directions.Length)];
-            previousPosition = gridPosition;
             Vector2Int newGridPos = gridPosition + dir;
 
-            if (GridManager.Instance.IsWithinBounds(newGridPos))
+            if (GridManager.Instance.IsWithinBounds(newGridPos) &&
+                !GridManager.Instance.IsTileOccupied(newGridPos)) // optional check
             {
+                previousPosition = gridPosition;
                 gridPosition = newGridPos;
                 targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, false) + positionOffset;
                 isMoving = true;
