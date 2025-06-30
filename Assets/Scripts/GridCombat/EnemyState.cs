@@ -28,13 +28,10 @@ public class IdleState : IEnemyState
     public void Enter(EnemyAIController enemy)
     {
         this.enemy = enemy;
+        enemy.NotifyStepComplete();
     }
 
-    public void Update()
-    {
-        // Transition logic here
-    }
-
+    public void Update() { }
     public void Exit() { }
 }
 
@@ -45,7 +42,30 @@ public class MoveState : IEnemyState
     public void Enter(EnemyAIController enemy)
     {
         this.enemy = enemy;
-        enemy.MoveToNextPosition();
+
+        Vector2Int direction = enemy.nextMoveDirection;
+        if (direction == Vector2Int.zero)
+        {
+            Debug.LogWarning($"{enemy.name} has no direction set for MoveState.");
+            enemy.TransitionToState(EnemyStateType.Idle);
+            return;
+        }
+
+        Vector2Int newPos = enemy.mover.gridPosition + direction;
+
+        if (GridManager.Instance.IsWithinBounds(newPos) &&
+            !GridManager.Instance.IsTileOccupied(newPos))
+        {
+            if (enemy.mover.TryMoveTo(newPos))
+            {
+                enemy.NotifyStepComplete();
+            }
+        }
+        else
+        {
+            Debug.Log($"{enemy.name} cannot move to {newPos}. Transitioning to Idle.");
+            enemy.TransitionToState(EnemyStateType.Idle);
+        }
     }
 
     public void Update() { }
@@ -61,10 +81,10 @@ public class AttackState : IEnemyState
     {
         this.enemy = enemy;
         enemy.PerformAttack();
+        enemy.NotifyStepComplete();
     }
 
     public void Update() { }
-
     public void Exit() { }
 }
 
@@ -76,10 +96,10 @@ public class TookDamageState : IEnemyState
     {
         this.enemy = enemy;
         enemy.OnTookDamage();
+        enemy.NotifyStepComplete();
     }
 
     public void Update() { }
-
     public void Exit() { }
 }
 
@@ -91,10 +111,10 @@ public class LowHealthState : IEnemyState
     {
         this.enemy = enemy;
         enemy.OnLowHealth();
+        enemy.NotifyStepComplete();
     }
 
     public void Update() { }
-
     public void Exit() { }
 }
 
@@ -106,10 +126,10 @@ public class HealState : IEnemyState
     {
         this.enemy = enemy;
         enemy.Heal();
+        enemy.NotifyStepComplete();
     }
 
     public void Update() { }
-
     public void Exit() { }
 }
 
@@ -121,10 +141,9 @@ public class StunnedState : IEnemyState
     {
         this.enemy = enemy;
         enemy.Stun();
-        
         Debug.Log($"{enemy.name} is stunned.");
     }
-    
+
     public void Update() { }
 
     public void Exit()
@@ -142,13 +161,10 @@ public class SeekPlayerState : IEnemyState
         this.enemy = enemy;
         Debug.Log($"{enemy.name} is seeking the player!");
         enemy.SeekPlayer();
+        enemy.NotifyStepComplete();
     }
 
-    public void Update()
-    {
-        
-    }
-
+    public void Update() { }
     public void Exit()
     {
         Debug.Log($"{enemy.name} finished seeking.");
@@ -171,16 +187,21 @@ public class PathfindToTileState : IEnemyState
         if (enemy.mover == null || GridManager.Instance == null)
         {
             Debug.LogWarning("Pathfinding aborted: missing mover or GridManager.");
+            enemy.NotifyStepComplete();
             return;
         }
 
         Vector2Int start = enemy.mover.gridPosition;
         Vector2Int target = enemy.targetTile;
 
-        // Generate A* path
+        if (start == target)
+        {
+            enemy.NotifyStepComplete();
+            return;
+        }
+
         path = GridManager.Instance.FindPath(start, target);
 
-        // Skip the current tile
         if (path.Count > 0 && path.Peek() == start)
         {
             path.Dequeue();
@@ -189,6 +210,7 @@ public class PathfindToTileState : IEnemyState
         if (path.Count == 0)
         {
             Debug.Log($"{enemy.name} has no valid path to target.");
+            enemy.NotifyStepComplete();
         }
     }
 
@@ -206,8 +228,7 @@ public class PathfindToTileState : IEnemyState
 
         if (path.Count == 0)
         {
-            // Destination reached
-            enemy.TransitionToState(EnemyStateType.Idle);
+            enemy.NotifyStepComplete();
             return;
         }
 
@@ -217,7 +238,7 @@ public class PathfindToTileState : IEnemyState
         if (!moved)
         {
             Debug.LogWarning($"{enemy.name} failed to move to {nextTile}, aborting path.");
-            enemy.TransitionToState(EnemyStateType.Idle);
+            enemy.NotifyStepComplete();
         }
     }
 
@@ -226,5 +247,3 @@ public class PathfindToTileState : IEnemyState
         path.Clear();
     }
 }
-
-

@@ -19,6 +19,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
 
     [Header("State Settings")]
     public EnemyGridMover mover;
+    [HideInInspector] public Vector2Int nextMoveDirection = Vector2Int.zero;
 
     public float attackCooldown = 3f;
     private float attackTimer;
@@ -37,11 +38,16 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
     public string CharacterName => name;
     public string CurrentState => currentStateType.ToString();
 
+    [Header("Scripted Cycle")]
+    public EnemyCycleSO behaviorCycle;
+    private int currentCycleIndex = 0;
+    private float cycleTimer = 0f;
+    private bool waitingForStepCompletion = false;
+
     protected override void Awake()
     {
         base.Awake();
 
-        // Initialize state instances
         idleState = new IdleState();
         moveState = new MoveState();
         attackState = new AttackState();
@@ -52,7 +58,6 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         seekPlayerState = new SeekPlayerState();
         pathfindToTileState = new PathfindToTileState();
 
-        // Cache mover
         mover = GetComponent<EnemyGridMover>();
     }
 
@@ -68,6 +73,12 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         currentState?.Update();
         stateTimer += Time.deltaTime;
 
+        if (behaviorCycle != null && currentCycleIndex < behaviorCycle.steps.Count)
+        {
+            ProcessCycle();
+            return;
+        }
+
         if (stateTimer >= minStateDuration)
         {
             EvaluateTransitions();
@@ -76,9 +87,6 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
 
     public void TransitionToState(EnemyStateType newStateType)
     {
-        if (currentStateType == newStateType)
-            return;
-
         currentState?.Exit();
 
         currentStateType = newStateType;
@@ -172,11 +180,24 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         return Vector2Int.Distance(mover.gridPosition, closestPlayerPos) < 4f;
     }
 
-    // Public methods that states can call
     public void MoveToNextPosition()
     {
         Debug.Log($"{name} moves!");
         mover.TryMove();
+    }
+
+    public void MoveInDirection(GridDirection direction)
+    {
+        Vector2Int dir = direction.ToVector();
+
+        if (dir == Vector2Int.zero)
+        {
+            Debug.LogWarning($"{name} tried to move in an invalid direction.");
+            return;
+        }
+
+        nextMoveDirection = dir;
+        TransitionToState(EnemyStateType.Move);
     }
 
     public void SeekPlayer()
@@ -217,6 +238,64 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
     private void ClearStun()
     {
         isStunned = false;
+    }
+
+    public void NotifyStepComplete()
+    {
+        waitingForStepCompletion = false;
+        cycleTimer = 0f;
+        AdvanceCycle();
+    }
+
+    private void ProcessCycle()
+    {
+        if (mover.isMoving || waitingForStepCompletion)
+            return;
+
+        if (currentCycleIndex >= behaviorCycle.steps.Count)
+            return;
+
+        EnemyCycleStep step = behaviorCycle.steps[currentCycleIndex];
+        cycleTimer += Time.deltaTime;
+
+        if (cycleTimer < step.waitTime)
+            return;
+
+        waitingForStepCompletion = true;
+
+        switch (step.actionType)
+        {
+            case EnemyCycleActionType.Wait:
+                NotifyStepComplete();
+                break;
+            case EnemyCycleActionType.Move:
+                MoveInDirection(step.moveDirection);
+                break;
+            case EnemyCycleActionType.Shoot:
+                PerformAttack();
+                NotifyStepComplete();
+                break;
+            case EnemyCycleActionType.SeekPlayer:
+                SeekPlayer();
+                NotifyStepComplete();
+                break;
+            case EnemyCycleActionType.PathToTile:
+                if (mover.gridPosition != step.targetTile)
+                {
+                    targetTile = step.targetTile;
+                    TransitionToState(EnemyStateType.PathfindToTile);
+                }
+                else
+                {
+                    NotifyStepComplete();
+                }
+                break;
+        }
+    }
+
+    private void AdvanceCycle()
+    {
+        currentCycleIndex = (currentCycleIndex + 1) % behaviorCycle.steps.Count;
     }
 
     public override void TakeDamage(int amount)

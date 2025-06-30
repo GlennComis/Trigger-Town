@@ -3411,11 +3411,13 @@ MonoBehaviour:
   spriteRenderer: {fileID: 4746914431495194418}
   nameLabel: {fileID: 3017828664932158389}
   mover: {fileID: 7548303116868740975}
+  nextMoveDirection: {x: 0, y: 0}
   attackCooldown: 3
   isStunned: 0
   minStateDuration: 1
   aggressionLevel: 0.75
   targetTile: {x: 0, y: 0}
+  behaviorCycle: {fileID: 11400000, guid: 083c1173d00a148d1819a2f7990b20de, type: 2}
 --- !u!114 &7639857186474204854
 MonoBehaviour:
   m_ObjectHideFlags: 0
