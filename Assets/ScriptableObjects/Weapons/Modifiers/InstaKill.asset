@@ -9,13 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31599eb6bd0141b4691879f91acd0bf6, type: 3}
-  m_Name: Dynamite
+  m_Script: {fileID: 11500000, guid: 9f00733438c146949532443591d9db4f, type: 3}
+  m_Name: InstaKill
   m_EditorClassIdentifier: 
-  weaponName: Dynamite
-  range: 0
-  fireRate: 2
-  maxPenetration: 0
-  pattern: 3
-  effects:
-  - {fileID: 11400000, guid: 7aed38176a43c5d49a62171c4f66407d, type: 2}
+  damageAmount: 100

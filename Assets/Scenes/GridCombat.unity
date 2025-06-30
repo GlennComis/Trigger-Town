@@ -3415,6 +3415,7 @@ MonoBehaviour:
   isStunned: 0
   minStateDuration: 1
   aggressionLevel: 0.75
+  targetTile: {x: 0, y: 0}
 --- !u!114 &7639857186474204854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3671,7 +3672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e66a4873e28a4f82b7a71dad5183232d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentWeapon: {fileID: 11400000, guid: afc3f19ef45b2fd42a4fa97aca6370dc, type: 2}
+  currentWeapon: {fileID: 11400000, guid: 9910ac7698a5c504e84eb58074e04d1b, type: 2}
 --- !u!224 &9080149159430314815
 RectTransform:
   m_ObjectHideFlags: 0

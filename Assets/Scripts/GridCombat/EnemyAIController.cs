@@ -112,13 +112,13 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         return state switch
         {
             EnemyStateType.Idle => 0.75f,
-            EnemyStateType.Move => 1.5f,
-            EnemyStateType.Attack => 2f,
-            EnemyStateType.TookDamage => 1f,
-            EnemyStateType.LowHealth => 1f,
-            EnemyStateType.Heal => 1.25f,
-            EnemyStateType.Stunned => 2f,
-            EnemyStateType.SeekPlayer => 1.75f,
+            EnemyStateType.Move => .5f,
+            EnemyStateType.Attack => .5f,
+            EnemyStateType.TookDamage => .2f,
+            EnemyStateType.LowHealth => .1f,
+            EnemyStateType.Heal => .5f,
+            EnemyStateType.Stunned => .1f,
+            EnemyStateType.SeekPlayer => .5f,
             EnemyStateType.PathfindToTile => 1.5f,
             _ => 1f
         };
