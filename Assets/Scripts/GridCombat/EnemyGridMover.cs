@@ -49,7 +49,8 @@ public class EnemyGridMover : MonoBehaviour
             Vector2Int newGridPos = gridPosition + dir;
 
             if (GridManager.Instance.IsWithinBounds(newGridPos) &&
-                !GridManager.Instance.IsTileOccupied(newGridPos))
+                !GridManager.Instance.IsTileOccupied(newGridPos) &&
+                GridManager.Instance.IsEnemySide(newGridPos))
             {
                 previousPosition = gridPosition;
                 gridPosition = newGridPos;
@@ -62,7 +63,9 @@ public class EnemyGridMover : MonoBehaviour
     
     public bool TryMoveTo(Vector2Int target)
     {
-        if (!GridManager.Instance.IsWithinBounds(target) || GridManager.Instance.IsTileOccupied(target))
+        if (!GridManager.Instance.IsWithinBounds(target) ||
+            GridManager.Instance.IsTileOccupied(target) ||
+            !GridManager.Instance.IsEnemySide(target))
             return false;
 
         previousPosition = gridPosition;
@@ -93,6 +96,7 @@ public class EnemyGridMover : MonoBehaviour
             Vector2Int newPos = gridPosition + dir;
             if (!GridManager.Instance.IsWithinBounds(newPos)) continue;
             if (GridManager.Instance.IsTileOccupied(newPos)) continue;
+            if (!GridManager.Instance.IsEnemySide(newPos)) continue;
 
             float dist = (playerPos - newPos).sqrMagnitude;
             if (dist < bestDistance)
