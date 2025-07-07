@@ -55,6 +55,16 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
         return pos.x >= 0 && pos.x < columns * 2 && pos.y >= 0 && pos.y < rows;
     }
 
+    public bool IsEnemySide(Vector2Int pos)
+    {
+        return pos.x >= columns;
+    }
+
+    public bool IsPlayerSide(Vector2Int pos)
+    {
+        return pos.x < columns;
+    }
+
     private void GenerateGrids()
     {
         for (int x = 0; x < columns * 2; x++)
