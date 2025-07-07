@@ -1425,8 +1425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46358dd896f5481ab0d684821dc0f39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showPlayerGrid: 1
-  showEnemyGrid: 1
+  showGrid: 1
 --- !u!114 &1068072086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3385,7 +3384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
-  gridPosition: {x: 3, y: 1}
+  gridPosition: {x: 7, y: 1}
   previousPosition: {x: -1, y: -1}
   positionOffset: {x: 0, y: -0.3, z: 0}
   isMoving: 0

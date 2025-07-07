@@ -15,5 +15,10 @@ MonoBehaviour:
   steps:
   - actionType: 0
     waitTime: 1
+    projectilePrefab: {fileID: 0}
+    damage: 1
+    projectileSpeed: 5
+    range: 4
+    pattern: 0
     moveDirection: 0
     targetTile: {x: 0, y: 0}
