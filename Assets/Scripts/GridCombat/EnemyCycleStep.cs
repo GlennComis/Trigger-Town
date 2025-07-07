@@ -3,21 +3,21 @@ using UnityEngine;
 [System.Serializable]
 public class EnemyCycleStep
 { 
-    [Header("Generic")]  
+    //[Header("Generic")]  
     public EnemyCycleActionType actionType;
     public float waitTime;
     
-    [Header("Shooting")]
+    //[Header("Shooting")]
     public GameObject projectilePrefab;
     public int damage = 1;
     public float projectileSpeed = 5f;
     public int range = 4;
     public WeaponTargetingPattern pattern;
     
-    [Header("Movement")]
+    //[Header("Movement")]
     public GridDirection moveDirection;
     
-    [Header("Pathfinding")]
+    //[Header("Pathfinding")]
     public Vector2Int targetTile; // for PathToTile
 }
 
