@@ -15,7 +15,7 @@ public class EnemyGridMover : MonoBehaviour
 
     private void Start()
     {
-        targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, false) + positionOffset;
+        targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition) + positionOffset;
         transform.position = targetWorldPosition;
         GridManager.Instance.RegisterEnemy(gridPosition, gameObject);
     }
@@ -53,7 +53,7 @@ public class EnemyGridMover : MonoBehaviour
             {
                 previousPosition = gridPosition;
                 gridPosition = newGridPos;
-                targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, false) + positionOffset;
+                targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition) + positionOffset;
                 isMoving = true;
                 break;
             }
@@ -67,7 +67,7 @@ public class EnemyGridMover : MonoBehaviour
 
         previousPosition = gridPosition;
         gridPosition = target;
-        targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, false) + positionOffset;
+        targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition) + positionOffset;
         isMoving = true;
         return true;
     }
@@ -106,7 +106,7 @@ public class EnemyGridMover : MonoBehaviour
         {
             previousPosition = gridPosition;
             gridPosition += bestDir;
-            targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, false) + positionOffset;
+            targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition) + positionOffset;
             isMoving = true;
         }
     }

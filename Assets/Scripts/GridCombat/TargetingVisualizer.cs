@@ -30,7 +30,11 @@ public class TargetingVisualizer : MonoBehaviour
 
         foreach (var gridPos in tilePositions)
         {
-            Vector3 worldPos = GridManager.Instance.GetWorldPosition(gridPos, false); // false = enemy grid
+            // Only show indicators on the ENEMY side of the grid
+            if (gridPos.x < GridManager.Instance.columns)
+                continue;
+
+            Vector3 worldPos = GridManager.Instance.GridToWorld(gridPos);
             GameObject indicator = Instantiate(indicatorPrefab, worldPos, Quaternion.identity, indicatorParent);
             activeIndicators.Add(indicator);
         }

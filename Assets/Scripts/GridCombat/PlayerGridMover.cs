@@ -19,7 +19,7 @@ public class PlayerGridMover : CharacterController
     protected override void Start()
     {
         base.Start();
-        targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, true) + positionOffset;
+        targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition) + positionOffset;
         transform.position = targetWorldPosition;
 
         GridManager.Instance.RegisterPlayer(this);
@@ -66,10 +66,12 @@ public class PlayerGridMover : CharacterController
 
             Vector2Int newGridPos = gridPosition + direction;
 
-            if (direction != Vector2Int.zero && GridManager.Instance.IsWithinBounds(newGridPos))
+            if (direction != Vector2Int.zero &&
+                GridManager.Instance.IsWithinBounds(newGridPos) &&
+                newGridPos.x < GridManager.Instance.columns) // Prevent player from moving into enemy side
             {
                 gridPosition = newGridPos;
-                targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition, true) + positionOffset;
+                targetWorldPosition = GridManager.Instance.GetWorldPosition(gridPosition) + positionOffset;
                 isMoving = true;
             }
         }

@@ -9,13 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31599eb6bd0141b4691879f91acd0bf6, type: 3}
-  m_Name: Sniper
+  m_Script: {fileID: 11500000, guid: bc0ff90e85744a0595911bb8b264f7a8, type: 3}
+  m_Name: Idle
   m_EditorClassIdentifier: 
-  weaponName: Sniper
-  range: 6
-  fireRate: 3
-  maxPenetration: 2
-  pattern: 0
-  effects:
-  - {fileID: 11400000, guid: 7aed38176a43c5d49a62171c4f66407d, type: 2}
+  steps:
+  - actionType: 0
+    waitTime: 1
+    moveDirection: 0
+    targetTile: {x: 0, y: 0}

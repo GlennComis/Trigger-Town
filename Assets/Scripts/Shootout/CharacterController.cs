@@ -47,7 +47,7 @@ public abstract class CharacterController : MonoBehaviour, IHealth
     private Material flashMaterial;
     private Coroutine hitRoutine;
     private static readonly int FlashAmountShaderProperty = Shader.PropertyToID("_FlashAmount");
-    private readonly WaitForSeconds FLASH_INTERVAL = new WaitForSeconds(0.1f);
+    private readonly WaitForSeconds FlashInterval = new WaitForSeconds(0.1f);
 
     #endregion
 
@@ -56,7 +56,10 @@ public abstract class CharacterController : MonoBehaviour, IHealth
     protected virtual void Awake()
     {
         SetupCharacter(maxHealth, gameObject.name);
-        flashMaterial = spriteRenderer.material;
+        if (spriteRenderer != null && spriteRenderer.material != null)
+            flashMaterial = spriteRenderer.material;
+        else
+            Debug.LogWarning("SpriteRenderer or its material is missing.", this);
     }
 
     protected virtual void Start()
@@ -91,6 +94,7 @@ public abstract class CharacterController : MonoBehaviour, IHealth
             StopCoroutine(hitRoutine);
 
         currentHealth -= amount;
+        currentHealth = Mathf.Max(0, currentHealth); // Clamp health to 0
         hitRoutine = StartCoroutine(HitRoutine());
     }
 
@@ -99,11 +103,11 @@ public abstract class CharacterController : MonoBehaviour, IHealth
         yield return new WaitForSeconds(0.5f);
 
         flashMaterial.SetFloat(FlashAmountShaderProperty, 1);
-        yield return FLASH_INTERVAL;
+        yield return FlashInterval;
         flashMaterial.SetFloat(FlashAmountShaderProperty, 0);
-        yield return FLASH_INTERVAL;
+        yield return FlashInterval;
         flashMaterial.SetFloat(FlashAmountShaderProperty, 1);
-        yield return FLASH_INTERVAL;
+        yield return FlashInterval;
         flashMaterial.SetFloat(FlashAmountShaderProperty, 0);
 
         if (healthSlider != null)
@@ -131,7 +135,7 @@ public abstract class CharacterController : MonoBehaviour, IHealth
 
     #region Combat
 
-    public void Shoot()
+    public virtual void Shoot()
     {
         animator?.SetTrigger(ShootStringHash);
         PlayGunShotClip();

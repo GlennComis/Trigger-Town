@@ -13,19 +13,66 @@ MonoBehaviour:
   m_Name: DefaultCycle
   m_EditorClassIdentifier: 
   steps:
-  - actionType: 0
-    waitTime: 1
-    moveDirection: 2
-    targetTile: {x: 0, y: 0}
-  - actionType: 1
-    waitTime: 1
-    moveDirection: 2
-    targetTile: {x: 0, y: 0}
   - actionType: 2
     waitTime: 1
+    projectilePrefab: {fileID: 855149605469353584, guid: 094d6e60af114424283a1efaa9045c42, type: 3}
+    damage: 1
+    projectileSpeed: 5
+    range: 8
+    pattern: 0
     moveDirection: 1
     targetTile: {x: 0, y: 0}
   - actionType: 1
     waitTime: 1
+    projectilePrefab: {fileID: 0}
+    damage: 1
+    projectileSpeed: 5
+    range: 4
+    pattern: 0
+    moveDirection: 0
+    targetTile: {x: 0, y: 0}
+  - actionType: 1
+    waitTime: 1
+    projectilePrefab: {fileID: 0}
+    damage: 1
+    projectileSpeed: 5
+    range: 4
+    pattern: 0
+    moveDirection: 0
+    targetTile: {x: 0, y: 0}
+  - actionType: 2
+    waitTime: 1
+    projectilePrefab: {fileID: 855149605469353584, guid: 094d6e60af114424283a1efaa9045c42, type: 3}
+    damage: 1
+    projectileSpeed: 5
+    range: 8
+    pattern: 0
     moveDirection: 3
+    targetTile: {x: 0, y: 0}
+  - actionType: 1
+    waitTime: 1
+    projectilePrefab: {fileID: 0}
+    damage: 1
+    projectileSpeed: 5
+    range: 4
+    pattern: 0
+    moveDirection: 1
+    targetTile: {x: 0, y: 0}
+  - actionType: 1
+    waitTime: 1
+    projectilePrefab: {fileID: 0}
+    damage: 1
+    projectileSpeed: 5
+    range: 4
+    pattern: 0
+    moveDirection: 1
+    targetTile: {x: 0, y: 0}
+  - actionType: 2
+    waitTime: 1
+    projectilePrefab: {fileID: 855149605469353584, guid: 094d6e60af114424283a1efaa9045c42, type: 3}
+    damage: 1
+    projectileSpeed: 5
+    range: 8
+    pattern: 0
+    moveDirection: 1
     targetTile: {x: 0, y: 0}

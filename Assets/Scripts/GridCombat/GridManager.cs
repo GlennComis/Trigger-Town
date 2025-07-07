@@ -15,6 +15,7 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
     public Color enemyTileColor = Color.red;
     public Transform tileParent; // Optional, for scene hierarchy cleanliness
     
+    public IReadOnlyList<PlayerGridMover> Players => playerList;
     private readonly List<PlayerGridMover> playerList = new();
     private Dictionary<Vector2Int, GameObject> enemyGridMap = new();
     
@@ -25,47 +26,58 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
     }
 
     #region TileCreation
-    public Vector3 GetWorldPosition(Vector2Int gridPos, bool isPlayer)
+    public Vector2Int GetGridPositionFromWorld(Vector3 worldPos)
     {
-        float xOffset = isPlayer ? 0 : columns * tileSize.x + 1f;
+        int x = Mathf.FloorToInt((worldPos.x - origin.x) / tileSize.x);
+        int y = Mathf.FloorToInt((worldPos.y - origin.y) / tileSize.y);
+        return new Vector2Int(x, y);
+    }
+    public Vector3 GetWorldPosition(Vector2Int gridPos)
+    {
         return new Vector3(
-            origin.x + gridPos.x * tileSize.x + xOffset,
-            origin.y + gridPos.y * tileSize.y,
+            origin.x + gridPos.x * tileSize.x + tileSize.x / 2f,
+            origin.y + gridPos.y * tileSize.y + tileSize.y / 2f,
+            0f
+        );
+    }
+
+    public Vector3 GridToWorld(Vector2Int gridPos)
+    {
+        return new Vector3(
+            origin.x + gridPos.x * tileSize.x + tileSize.x / 2f,
+            origin.y + gridPos.y * tileSize.y + tileSize.y / 2f,
             0f
         );
     }
 
     public bool IsWithinBounds(Vector2Int pos)
     {
-        return pos.x >= 0 && pos.x < columns && pos.y >= 0 && pos.y < rows;
+        return pos.x >= 0 && pos.x < columns * 2 && pos.y >= 0 && pos.y < rows;
     }
 
     private void GenerateGrids()
     {
-        for (int x = 0; x < columns; x++)
+        for (int x = 0; x < columns * 2; x++)
         {
             for (int y = 0; y < rows; y++)
             {
                 Vector2Int pos = new Vector2Int(x, y);
-
-                // Player tile
-                CreateTile(pos, true, playerTileColor);
-
-                // Enemy tile
-                CreateTile(pos, false, enemyTileColor);
+                bool isPlayerSide = x < columns;
+                Color color = isPlayerSide ? playerTileColor : enemyTileColor;
+                CreateTile(pos, color);
             }
         }
     }
 
-    private void CreateTile(Vector2Int gridPos, bool isPlayer, Color color)
+    private void CreateTile(Vector2Int gridPos, Color color)
     {
-        Vector3 worldPos = GetWorldPosition(gridPos, isPlayer);
+        Vector3 worldPos = GridToWorld(gridPos);
 
         // Optional tile spacing (set this to ~0.1f or adjust as needed)
         float spacing = 0.1f;
         Vector3 scaledSize = new Vector3(tileSize.x - spacing, tileSize.y - spacing, 1f);
 
-        GameObject tileGO = new GameObject($"{(isPlayer ? "Player" : "Enemy")}Tile_{gridPos.x}_{gridPos.y}");
+        GameObject tileGO = new GameObject($"Tile_{gridPos.x}_{gridPos.y}");
         tileGO.transform.position = worldPos;
         tileGO.transform.localScale = scaledSize;
 
@@ -76,6 +88,13 @@ public class GridManager : SingletonMonoBehaviour<GridManager>
         sr.sprite = tileSprite;
         sr.color = color;
         sr.sortingOrder = 5;
+    }
+
+    public Vector2Int WorldToGrid(Vector3 worldPos)
+    {
+        int x = Mathf.FloorToInt((worldPos.x - origin.x) / tileSize.x);
+        int y = Mathf.FloorToInt((worldPos.y - origin.y) / tileSize.y);
+        return new Vector2Int(x, y);
     }
     #endregion TileCreation
 

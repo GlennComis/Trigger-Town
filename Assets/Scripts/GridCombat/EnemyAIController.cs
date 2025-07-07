@@ -4,6 +4,9 @@ using System.Collections.Generic;
 [RequireComponent(typeof(EnemyGridMover))]
 public class EnemyAIController : CharacterController, IStatefulCharacter
 {
+    [Header("Combat Settings")]
+    [SerializeField] private Vector3 projectileSpawnOffset = new Vector3(-0.5f, 0f, 0f);
+
     private IEnemyState currentState;
     private EnemyStateType currentStateType;
 
@@ -179,7 +182,35 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
 
         return Vector2Int.Distance(mover.gridPosition, closestPlayerPos) < 4f;
     }
+    
+    public override void Shoot()
+    {
+        base.Shoot();
 
+        if (behaviorCycle == null || currentCycleIndex >= behaviorCycle.steps.Count)
+            return;
+
+        var step = behaviorCycle.steps[currentCycleIndex];
+
+        if (step.projectilePrefab == null)
+        {
+            Debug.LogWarning($"{name} tried to shoot but has no projectile assigned.");
+            return;
+        }
+
+        Vector3 shootWorldDirection = Vector2.left;
+
+        GameObject projectileGO = Instantiate(step.projectilePrefab, transform.position + projectileSpawnOffset, Quaternion.identity);
+        Projectile proj = projectileGO.GetComponent<Projectile>();
+        proj.direction = shootWorldDirection;
+        proj.speed = step.projectileSpeed;
+        proj.damage = step.damage;
+        proj.maxDistance = step.range;
+
+        if (projectileGO.TryGetComponent(out SpriteRenderer sr))
+            sr.flipX = true;
+    }
+    
     public void MoveToNextPosition()
     {
         Debug.Log($"{name} moves!");
@@ -208,6 +239,7 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
 
     public void PerformAttack()
     {
+        Shoot();
         Debug.Log($"{name} attacks!");
     }
 
@@ -312,5 +344,10 @@ public class EnemyAIController : CharacterController, IStatefulCharacter
         }
 
         base.Die();
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position + projectileSpawnOffset, 0.1f);
     }
 }
