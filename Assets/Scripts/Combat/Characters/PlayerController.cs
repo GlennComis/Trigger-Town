@@ -2,39 +2,26 @@ using UnityEngine;
 
 public class PlayerController : CharacterController
 {
-    private const int maxHealth = 100;
-    protected override void Start()
-    {
-        SetupCharacter(maxHealth, string.Empty);
-        base.Start();
-    }
-    
+    public int weaponDamage = 10;
+    public System.Action OnShootRequested; // Player → BeatManager event
 
-    private void OnEnable()
-    {
-        //FastDrawManager.OnDrawResult += ProcessResult;
-    }
-    
-    private void OnDisable()
-    {
-        //FastDrawManager.OnDrawResult -= ProcessResult;
-    }
-
-    private void ProcessResult(bool playerWon)
-    {
-       
-    }
-    
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            
+            OnShootRequested?.Invoke();   // "I want to shoot now"
         }
     }
 
-    protected override void Die()
+    // BeatManager will call this on successful timing
+    public override void Shoot()
     {
-        base.Die();
+        base.Shoot();
+    }
+
+    public override void TakeDamage(int amount)
+    {
+        base.TakeDamage(amount);
+        Debug.Log("Player takes damage");
     }
 }
