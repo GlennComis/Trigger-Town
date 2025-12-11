@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class PlayerController : CharacterController
 {
+    private const int maxHealth = 100;
     protected override void Start()
     {
-        SetupCharacter(PlayerManager.Instance.maxHealth, string.Empty);
+        SetupCharacter(maxHealth, string.Empty);
         base.Start();
     }
     

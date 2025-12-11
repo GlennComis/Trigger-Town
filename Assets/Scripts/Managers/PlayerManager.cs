@@ -6,9 +6,6 @@ public class PlayerManager : SingletonMonoBehaviour<PlayerManager>
     [Header("Sub-systems")]
     [SerializeField] private PlayerXpController xpController;
 
-    public int currentHealth = 100;
-    public int maxHealth = 100;
-
     protected override void Awake()
     {
         base.Awake();

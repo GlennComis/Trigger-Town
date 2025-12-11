@@ -28,7 +28,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 
      public void SetHealth()
      {
-         healthLabel.text = PlayerManager.Instance.currentHealth + " / " + PlayerManager.Instance.maxHealth;
+         //healthLabel.text = PlayerManager.Instance.currentHealth + " / " + PlayerManager.Instance.maxHealth;
      }
      
      public void SetCurrency()
